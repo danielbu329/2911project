@@ -1,3 +1,4 @@
+//package connect4;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -27,10 +28,10 @@ public class GUI extends JFrame implements MouseListener, MouseMotionListener, R
     private int[] rows;
     private BufferedImage screen;
     private BufferedImage backbuffer;
-    private int key;
     private int playing = -1;
     private int curr;
-    private int currX, currY;
+    private int column;
+    Piece current;
 
     public static final int START_Y = 30;
 
@@ -60,6 +61,7 @@ public class GUI extends JFrame implements MouseListener, MouseMotionListener, R
         addKeyListener(this);
         yellow = load("yellow.png");
         red = load("red.png");
+        current = new Piece(yellow, 0, START_Y);
         gameboard = load("board.png");
         background = getBackground();
         columns = new int[]{19, 119, 219, 319, 419, 519, 619};
@@ -69,7 +71,6 @@ public class GUI extends JFrame implements MouseListener, MouseMotionListener, R
         update(screen.getGraphics());
         backbuffer = new BufferedImage(701, 701, BufferedImage.TYPE_INT_ARGB);
         update(backbuffer.getGraphics());
-        key = 0;
         players = new Player[NUM_PLAYERS];
         players[0] = new Human("Human", 'O');
         //players[0] = new Computer(1, 'O');
@@ -83,22 +84,8 @@ public class GUI extends JFrame implements MouseListener, MouseMotionListener, R
     {
         playing = -1;
         curr = 0;
+        column = 0;
         board.reset();
-    }
-
-    //Mouse Event Handling
-    public void mousePressed(MouseEvent event){
-        int x = event.getX();
-        int y = event.getY();
-        if(event.isMetaDown()){
-            Graphics g = getGraphics();
-            Rectangle r = getBounds();
-            g.clearRect(0, 0, r.width, r.height);
-            g.dispose();
-        } else {
-            last_x = x;
-            last_y = y;
-        }
     }
 
     BufferedImage load(String filename)
@@ -115,37 +102,33 @@ public class GUI extends JFrame implements MouseListener, MouseMotionListener, R
         return null;
     }
 
+    private int getX(MouseEvent event)
+    {
+        int x = (event.getX() + 40) / 100;
+        return x * 100 + 19;
+    }
+
     public void mouseClicked(MouseEvent event){}
     public void mouseEntered(MouseEvent event){}
     public void mouseExited(MouseEvent event){}
     public void mouseReleased(MouseEvent event){}
 
-    public void mouseDragged(MouseEvent event){
-        int x = event.getX();
-        int y = event.getY();
-        if(!event.isMetaDown()) {
-            //don't process the right button drag
-            Graphics g = screen.getGraphics();
-            g.drawImage(red, x, y, null);
-            g.drawLine(last_x, last_y, x, y);
-            g.dispose();
-            last_x = x;
-            last_y = y;
-        }
+    //Mouse Event Handling
+    public void mousePressed(MouseEvent event){
+        column = getX(event) / 100 + 1;
     }
 
+    public void mouseDragged(MouseEvent event){ }
+
     public void mouseMoved(MouseEvent event) {
-        int x = event.getX();
-        int y = event.getY();
-        //don't process the right button drag
-        Graphics g = getGraphics();
-        g.drawImage(red, x, y, null);
-        g.dispose();
+        int x = getX(event);
+        current.move(x, START_Y);
     }
 
     public void update(Graphics g) {
         g.setColor(background);
         g.fillRect(0, 0, 1000, 1000);
+        current.draw(g, backbuffer);
         board.draw(g, rows, columns, red, yellow);
         g.drawImage(gameboard, 0, 100, null);
         /*
@@ -159,7 +142,8 @@ public class GUI extends JFrame implements MouseListener, MouseMotionListener, R
        */
     }
 
-    public void paint(Graphics g) {
+    public void paint(Graphics g)
+    {
         update(screen.getGraphics());
         g.drawImage(screen, 0, 0, null);
     }
@@ -201,14 +185,26 @@ public class GUI extends JFrame implements MouseListener, MouseMotionListener, R
         int move = player.getMove(board, players[curr].getSymbol(), this);
         //Ensure the board is in the same state as before we made the move
         board.restore();
-        if (board.drop(move, player.getSymbol()))
+        int index = board.canDrop(move);
+        if (index >= 0)
         {
-            System.out.println("Move:" + move);
-            curr = 1 - curr;        //Alternate player
-            char winner = board.check();
-            if (winner == ' ') return 0;
-            if (winner == players[0].getSymbol()) return 1;
-            if (winner == players[1].getSymbol()) return 2;
+            current.move(columns[move], START_Y);
+            current.drop(move, rows[index]);
+        }
+        //current.drop(618);
+        if (current.isFinished())
+        {
+            if (board.drop(current.getColumn(), player.getSymbol()))
+            {
+                board.save();
+                System.out.println("Move:" + move);
+                curr = 1 - curr;        //Alternate player
+                current.setImage(curr == 1 ? red : yellow);
+                char winner = board.check();
+                if (winner == ' ') return 0;
+                if (winner == players[0].getSymbol()) return 1;
+                if (winner == players[1].getSymbol()) return 2;
+            }
         }
         return -1;
     }
@@ -227,14 +223,13 @@ public class GUI extends JFrame implements MouseListener, MouseMotionListener, R
     @Override
     public void keyReleased(KeyEvent e)
     {
-        key = e.getKeyChar() - '0';
-        System.out.println("Key:" + e.getKeyChar() + " Num:" + key);
+        column = e.getKeyChar() - '0';
     }
 
     public int nextInt()
     {
-        int column = key - '0';
-        key = 0;
-        return column;
+        int previous = column;
+        column = 0;
+        return previous;
     }
 }
