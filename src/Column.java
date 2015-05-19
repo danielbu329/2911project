@@ -1,3 +1,4 @@
+//package connect4;
 
 import java.util.Arrays;
 
@@ -72,4 +73,22 @@ public class Column
      * @param row
      */
     void set(int row) { cells[row] = '+';}
+
+    public int canDrop()
+    {
+        int index = -1;
+
+        while (index < cells.length - 1)
+        {
+            if (cells[index + 1] == ' ')
+            {
+                index++;
+            }
+            else
+            {
+                break;
+            }
+        }
+        return index;
+    }
 }
