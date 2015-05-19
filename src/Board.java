@@ -1,262 +1,235 @@
+//package connect4;
 
+import javax.imageio.ImageIO;
+import javax.swing.*;
 import java.awt.*;
+import java.awt.event.*;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 
-public class Board
+public class GUI extends JFrame implements MouseListener, MouseMotionListener, Runnable, KeyListener
 {
-    private Column[] columns;
-    private Column[] savedColumns;
-    private Column blank;
-    private int w;
-    private int h;
+    private Board board;
+    private Player players[];
 
-    /**
-     * Create a new game board
-     * @param columns - number of columns wide
-     * @param rows - number of rows high
-     */
-    public Board(int columns, int rows)
+    public static final int NUM_COLUMNS = 7;
+    public static final int NUM_ROWS = 6;
+    public static final int NUM_PLAYERS = 2;
+
+    private Thread animation;
+    private int last_x;
+    private int last_y;
+    private Image yellow;
+    private Image red;
+    private Image gameboard;
+    private Color background;
+    private int[] columns;
+    private int[] rows;
+    private BufferedImage screen;
+    private BufferedImage backbuffer;
+    private int playing = -1;
+    private int curr;
+    private int column;
+    Piece current;
+
+    public static final int START_Y = 30;
+
+    public static void main(String[] args)
     {
-        this.columns = new Column[columns];
-        savedColumns = new Column[columns];
-        blank = new Column(rows);
-        for (int column = 0; column < columns; column++)
+        SwingUtilities.invokeLater ( new Runnable()
         {
-            this.columns[column] = new Column(rows);
-            savedColumns[column] = new Column(rows);
-        }
-        w = columns;
-        h = rows;
-    }
-
-    /**
-     * Return the size of the board
-     * @return thw width of the board
-     */
-    public int getColumns()
-    {
-        return w;
-    }
-
-    /**
-     * Check if 4 tiles in a row are the same
-     * @param row start position
-     * @param col
-     * @param row_step how much to step by
-     * @param col_step
-     * @return 0 if no line, or the symbol if a line is found
-     */
-    private char check4(int row, int col, int row_step, int col_step)
-    {
-        char line = columns[col].at(row);
-        if (line == ' ') return 0;
-
-        for (int check = 3; check > 0; check--)
-        {
-            row += row_step;
-            col += col_step;
-            if (columns[col].at(row) != line) return 0;
-        }
-        return line;
-    }
-
-    /**
-     * Check if a line is present on the board
-     * @param row - the row to check
-     * @return 0 if no line, or the symbol if a line is found
-     */
-    private char checkRow(int row)
-    {
-        char win = 0;
-        for (int col = w - 4; col >= 0; col--)
-        {
-            win = check4(row, col, 0, 1);
-            if (win != 0) return win;
-        }
-        return 0;
-    }
-
-    /**
-     * Check if a line is present on the board
-     * @param column - the column to check
-     * @return 0 if no line, or the symbol if a line is found
-     */
-    private char checkColumn(int column)
-    {
-        char win = 0;
-        for (int row = h - 4; row >= 0; row--)
-        {
-            win = check4(row, column, 1, 0);
-            if (win != 0) return win;
-        }
-        return 0;
-    }
-
-    /**
-     * Check if a line is present on the board
-     * @return 0 if no line, or the symbol if a line is found
-     */
-    private char checkDiagonal()
-    {
-        char win = 0;
-        for (int column = w - 1; column >= 0; column--)
-        {
-            for (int row = h - 4; row >= 0; row--)
+            @Override
+            public void run()
             {
-                if (column < w - 4)
-                {
-                    win = check4(row, column, 1, 1);
-                    if (win != 0) return win;
-                }
-                if (column >= 4)
-                {
-                    win = check4(row, column, 1, -1);
-                    if (win != 0) return win;
-                }
+                GUI frame = new GUI();
+                frame.setVisible(true);
             }
-            for (int row = h - 1; row >= 4; row--)
+        });
+    }
+
+    public GUI()
+    {
+        setTitle("Connect 4");
+        setSize(701, 701);
+        setResizable(false);
+        setLocation(150, 200);
+        setDefaultCloseOperation(EXIT_ON_CLOSE);
+        last_x = last_y = 0;
+        addMouseListener(this);
+        addMouseMotionListener(this);
+        addKeyListener(this);
+        yellow = load("yellow.png");
+        red = load("red.png");
+        current = new Piece(yellow, 0, START_Y);
+        gameboard = load("board.png");
+        background = getBackground();
+        columns = new int[]{19, 119, 219, 319, 419, 519, 619};
+        rows = new int[]{118, 218, 318, 418, 518, 618};
+        board = new Board(NUM_COLUMNS, NUM_ROWS);
+        screen = new BufferedImage(701, 701, BufferedImage.TYPE_INT_ARGB);
+        update(screen.getGraphics());
+        backbuffer = new BufferedImage(701, 701, BufferedImage.TYPE_INT_ARGB);
+        update(backbuffer.getGraphics());
+        players = new Player[NUM_PLAYERS];
+        players[0] = new Human("Human", 'O');
+        //players[0] = new Computer(1, 'O');
+        players[1] = new Computer(1, 'X');
+        startgame();
+        animation = new Thread(this);
+        animation.start();
+    }
+
+    private void startgame()
+    {
+        playing = -1;
+        curr = 0;
+        column = 0;
+        board.reset();
+    }
+
+    BufferedImage load(String filename)
+    {
+        try
+        {
+            BufferedImage image = ImageIO.read(new File("src/" + filename));
+            return image;
+        }
+        catch (IOException err)
+        {
+            System.out.println("Exception:" + err);
+        }
+        return null;
+    }
+
+    private int getX(MouseEvent event)
+    {
+        int x = (event.getX() + 40) / 100;
+        return x * 100 + 19;
+    }
+
+    public void mouseClicked(MouseEvent event){}
+    public void mouseEntered(MouseEvent event){}
+    public void mouseExited(MouseEvent event){}
+    public void mouseReleased(MouseEvent event){}
+
+    //Mouse Event Handling
+    public void mousePressed(MouseEvent event){
+        column = getX(event) / 100 + 1;
+    }
+
+    public void mouseDragged(MouseEvent event){ }
+
+    public void mouseMoved(MouseEvent event) {
+        int x = getX(event);
+        current.move(x, START_Y);
+    }
+
+    public void update(Graphics g) {
+        g.setColor(background);
+        g.fillRect(0, 0, 1000, 1000);
+        current.draw(g, backbuffer);
+        board.draw(g, rows, columns, red, yellow);
+        g.drawImage(gameboard, 0, 100, null);
+        /*
+        for (int y : rows)
+        {
+            for (int x : columns)
             {
-                if (column < w - 4)
-                {
-                    win = check4(row, column, -1, 1);
-                    if (win != 0) return win;
-                }
-                if (column >= 4)
-                {
-                    win = check4(row, column, -1, -1);
-                    if (win != 0) return win;
-                }
-            }
-        }
-        return 0;
-
-    }
-
-    /**
-     * Check if a line is present on the board
-     * @return 0 if no line, or the symbol if a line is found
-     */
-    public char check()
-    {
-        char win = 0;
-
-        for (int row = 0; row < h; row++)
-        {
-            win = checkRow(row);
-            if (win != 0) return win;
-        }
-
-        for (int column = 0; column < w; column++)
-        {
-            win = checkColumn(column);
-            if (win != 0) return win;
-        }
-
-        win = checkDiagonal();
-        if (win != 0) return win;
-
-        for (int column = 0; column < w; column++)
-        {
-            if (columns[column].at(0) == ' ') return 0; //Board is not full
-        }
-
-        return ' ';     //No one wins
-    }
-
-    /**
-     * Save a copy of the board, for AI testing possible outcomes
-     */
-    public void save()
-    {
-        for (int column = 0; column < w; column++)
-        {
-            savedColumns[column].copy(columns[column]);
-        }
-    }
-
-    /**
-     * Restore the board back to the saved board
-     */
-    public void restore()
-    {
-        for (int column = 0; column < w; column++)
-        {
-            columns[column].copy(savedColumns[column]);
-        }
-    }
-
-    /**
-     * Drop a piece onto the board
-     * @param move which column to drop into
-     * @param symbol which symbol are we dropping
-     * @return false if not able to drop
-     */
-    public boolean drop(int move, char symbol)
-    {
-        if (move < 0 || move >= getColumns()) return false;
-        Column column = columns[move];
-        return column.drop(symbol);
-    }
-
-    /**
-     * Draw the board
-     */
-    public void draw()
-    {
-        System.out.print("  ");
-        String line = "  -------------------------------".substring(0, getColumns() * 2 + 2);
-        for (int column = 1; column <= getColumns(); column++)
-        {
-            System.out.print(column);
-            System.out.print(' ');
-        }
-        System.out.println();
-        System.out.println(line);
-        for (int row = 0; row < columns[0].getRows(); row++)
-        {
-            System.out.print((char)('A' + row));
-            for (int column = 0; column < getColumns(); column++)
-            {
-                System.out.print("|");
-                System.out.print(columns[column].at(row));
-            }
-            System.out.println("|");
-            System.out.println(line);
-        }
-        System.out.println();
-    }
-
-    public void reset()
-    {
-        for (int column = 0; column < w; column++)
-        {
-            columns[column].copy(blank);
-        }
-    }
-
-    /**
-     * For debugging, allows a cell to be set
-     */
-    void set(String index)
-    {
-        int row = index.toUpperCase().charAt(0) - 'A';
-        int col = index.charAt(1) - '1';
-        columns[col].set(row);
-    }
-
-    public void draw(Graphics g, int[] rows, int[] cols, Image red, Image yellow)
-    {
-        for (int row = 0; row < columns[0].getRows(); row++)
-        {
-            for (int column = 0; column < getColumns(); column++)
-            {
-                char ch = columns[column].at(row);
-                if (ch == ' ') continue;
-                int x = cols[column];
-                int y = rows[row];
-                Image cell = yellow;
-                if (ch == 'X') cell = red;
-                g.drawImage(cell, x, y, null);
+                g.drawImage(red, x, y, null);
             }
         }
+       */
+    }
+
+    public void paint(Graphics g)
+    {
+        update(screen.getGraphics());
+        g.drawImage(screen, 0, 0, null);
+    }
+
+    @Override
+    public void run()
+    {
+        while ( Thread.currentThread() == animation )
+        {
+            repaint ();
+            try
+            {
+                if (playing < 0)
+                {
+                    playing = play();
+                }
+                else
+                {
+                    System.out.println("Winner");
+                }
+                Thread.sleep ( 20 );
+            }
+            catch ( InterruptedException e )
+            {
+                //System.out.println ( "Exception: " + e.getMessage() );
+            }
+        }
+    }
+
+    /**
+     * Play the game
+     */
+    private int play()
+    {
+        Player player = players[curr];
+        player = players[curr];
+        board.save();   //The AI will probably modify the state of the board
+        //if (player instanceof Human) System.out.print(player.getName() + " which ");
+        int move = player.getMove(board, players[curr].getSymbol(), this);
+        //Ensure the board is in the same state as before we made the move
+        board.restore();
+        int index = board.canDrop(move);
+        if (index >= 0)
+        {
+            current.move(columns[move], START_Y);
+            current.drop(move, rows[index]);
+        }
+        //current.drop(618);
+        if (current.isFinished())
+        {
+            if (board.drop(current.getColumn(), player.getSymbol()))
+            {
+                board.save();
+                System.out.println("Move:" + move);
+                curr = 1 - curr;        //Alternate player
+                current.setImage(curr == 1 ? red : yellow);
+                char winner = board.check();
+                if (winner == ' ') return 0;
+                if (winner == players[0].getSymbol()) return 1;
+                if (winner == players[1].getSymbol()) return 2;
+            }
+        }
+        return -1;
+    }
+
+    @Override
+    public void keyTyped(KeyEvent e)
+    {
+    }
+
+    @Override
+    public void keyPressed(KeyEvent e)
+    {
+
+    }
+
+    @Override
+    public void keyReleased(KeyEvent e)
+    {
+        column = e.getKeyChar() - '0';
+    }
+
+    public int nextInt()
+    {
+        int previous = column;
+        column = 0;
+        return previous;
     }
 }
