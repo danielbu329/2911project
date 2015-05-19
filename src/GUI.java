@@ -164,7 +164,7 @@ public class GUI extends JFrame implements MouseListener, MouseMotionListener, R
                 {
                     System.out.println("Winner");
                 }
-                Thread.sleep ( 50 );
+                Thread.sleep ( 20 );
             }
             catch ( InterruptedException e )
             {
