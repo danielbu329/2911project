@@ -1,4 +1,3 @@
-
 import java.util.Random;
 import java.util.Scanner;
 
@@ -136,6 +135,12 @@ public class Computer implements Player
         }
 
         return bestColumn;
+    }
+
+    @Override
+    public int getMove(Board board, char symbol, GUI input)
+    {
+        return getMove(board, symbol, (Scanner)null);
     }
 
     /**

@@ -1,4 +1,6 @@
 
+import java.awt.*;
+
 public class Board
 {
     private Column[] columns;
@@ -111,6 +113,19 @@ public class Board
                     if (win != 0) return win;
                 }
             }
+            for (int row = h - 1; row >= 4; row--)
+            {
+                if (column < w - 4)
+                {
+                    win = check4(row, column, -1, 1);
+                    if (win != 0) return win;
+                }
+                if (column >= 4)
+                {
+                    win = check4(row, column, -1, -1);
+                    if (win != 0) return win;
+                }
+            }
         }
         return 0;
 
@@ -215,6 +230,33 @@ public class Board
         for (int column = 0; column < w; column++)
         {
             columns[column].copy(blank);
+        }
+    }
+
+    /**
+     * For debugging, allows a cell to be set
+     */
+    void set(String index)
+    {
+        int row = index.toUpperCase().charAt(0) - 'A';
+        int col = index.charAt(1) - '1';
+        columns[col].set(row);
+    }
+
+    public void draw(Graphics g, int[] rows, int[] cols, Image red, Image yellow)
+    {
+        for (int row = 0; row < columns[0].getRows(); row++)
+        {
+            for (int column = 0; column < getColumns(); column++)
+            {
+                char ch = columns[column].at(row);
+                if (ch == ' ') continue;
+                int x = cols[column];
+                int y = rows[row];
+                Image cell = yellow;
+                if (ch == 'X') cell = red;
+                g.drawImage(cell, x, y, null);
+            }
         }
     }
 }

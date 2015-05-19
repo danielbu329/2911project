@@ -66,6 +66,18 @@ public class Human implements Player
     }
 
     @Override
+    public int getMove(Board board, char symbol, GUI input)
+    {
+        int column = input.nextInt();
+        if (column >=1 && column <= board.getColumns())
+        {
+            System.out.println("Got input:" + column);
+        }
+
+        return column - 1;
+    }
+
+    @Override
     public char getSymbol()
     {
         return symbol;

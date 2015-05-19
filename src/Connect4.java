@@ -1,4 +1,5 @@
 
+
 import com.sun.org.apache.xpath.internal.SourceTree;
 
 import java.util.HashMap;
@@ -41,9 +42,10 @@ public class Connect4
         System.out.println("1: Play 1 player");
         System.out.println("2: Play 2 players");
         System.out.println("3: Test AI");
+        System.out.println("4: Test Board");
 
         int choice = 0;
-        while (choice < 1 || choice > 3)
+        while (choice < 1 || choice > 4)
         {
             choice = input.nextInt();
         }
@@ -61,6 +63,9 @@ public class Connect4
             case 3:
                 testAI();
                 return;
+            case 4:
+                testBoard();
+                return;
         }
 
         while (true)
@@ -68,6 +73,28 @@ public class Connect4
             play(true);
             System.out.printf("Play again (y/n)");
             if (input.next().equalsIgnoreCase("n")) break;
+        }
+    }
+
+    private void testBoard()
+    {
+        while (true)
+        {
+            board.reset();
+            char winner = 0;
+            while (winner == 0)
+            {
+                board.draw();
+                System.out.print("Enter coordinate(A1-F7): ");
+                String coord = input.next();
+                if (coord.length() == 2)
+                {
+                    board.set(coord);
+                }
+                winner = board.check();
+            }
+            System.out.println("Found a line");
+            board.draw();
         }
     }
 

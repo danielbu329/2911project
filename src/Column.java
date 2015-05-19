@@ -66,4 +66,10 @@ public class Column
     {
         return new String(cells);
     }
+
+    /**
+     * For testing, allow cells to be set to +, can not be used to cheat since it would show
+     * @param row
+     */
+    void set(int row) { cells[row] = '+';}
 }

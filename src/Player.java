@@ -1,5 +1,4 @@
 
-
 import java.util.Scanner;
 
 public interface Player
@@ -18,6 +17,15 @@ public interface Player
      * @param input
      */
     public int getMove(Board board, char symbol, Scanner input);
+
+    /**
+     * The move for the player
+     * @return - which column should the drop occur in
+     * @param board - the game board
+     * @param symbol
+     * @param input
+     */
+    public int getMove(Board board, char symbol, GUI input);
 
     /**
      * How is the player represented on the board
