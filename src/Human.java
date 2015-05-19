@@ -1,4 +1,6 @@
 
+//package connect4;
+
 import java.util.Random;
 import java.util.Scanner;
 
@@ -56,7 +58,8 @@ public class Human implements Player
     {
         System.out.print("column (1-" + board.getColumns() + ")? ");
         int column = 0;
-        while (column < 1 || column > board.getColumns())
+        column = input.nextInt();
+        if (column < 1 || column > board.getColumns())
         {
             column = input.nextInt();
         }
