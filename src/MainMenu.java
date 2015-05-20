@@ -27,12 +27,9 @@ import javax.swing.SwingConstants;
 public class MainMenu extends JFrame{
 	JPanel cards;
 	JPanel startPanel;
-	JButton btnStart;
-	JButton btnLoad; 
-	JButton btnQuit;
-	
 	JPanel choosePlayersPanel;
-	
+	JPanel onePlayerPanel;
+	JPanel twoPlayerPanel;
 	
 	public MainMenu() {
 		
@@ -66,9 +63,9 @@ public class MainMenu extends JFrame{
 		JButton btnTwoPlayer = new JButton("Two Player"); 
 		JButton btnBack = new JButton("Back");
 		JLabel welcomeMessage = new JLabel("Choose Players");
-		btnStart.setMinimumSize(new Dimension(300,40));
-		btnLoad.setMinimumSize(new Dimension(300,40));
-		btnQuit.setMinimumSize(new Dimension(300,40));
+		btnOnePlayer.setMinimumSize(new Dimension(300,40));
+		btnTwoPlayer.setMinimumSize(new Dimension(300,40));
+		btnBack.setMinimumSize(new Dimension(300,40));
 		welcomeMessage.setFont(new Font("Comic Sans", Font.PLAIN, 30));
 //		ImageIcon image = new ImageIcon("src/menu.jpg");
 //		welcomeMessage.setIcon(image);
@@ -116,17 +113,14 @@ public class MainMenu extends JFrame{
 		startPanel.setVisible(true);
 		
 		GroupLayout gl = new GroupLayout(startPanel);
-		btnStart = new JButton("Start"); 
-		btnLoad = new JButton("Load"); 
-		btnQuit = new JButton("Quit");
+		JButton btnStart = new JButton("Start"); 
+		JButton btnLoad = new JButton("Load"); 
+		JButton btnQuit = new JButton("Quit");
 		JLabel welcomeMessage = new JLabel("Connect 4");
 		btnStart.setMinimumSize(new Dimension(300,40));
 		btnLoad.setMinimumSize(new Dimension(300,40));
 		btnQuit.setMinimumSize(new Dimension(300,40));
 		welcomeMessage.setFont(new Font("Comic Sans", Font.PLAIN, 30));
-//		ImageIcon image = new ImageIcon("src/menu.jpg");
-//		welcomeMessage.setIcon(image);
-		
 		btnStart.addActionListener(new ActionListener() {
 
 			@Override
@@ -156,8 +150,6 @@ public class MainMenu extends JFrame{
 				.addComponent(btnQuit)
 				)
 		);
-		
-		
 		gl.setVerticalGroup(gl.createSequentialGroup()
 				.addGap(200)
 				.addComponent(welcomeMessage)
@@ -171,6 +163,7 @@ public class MainMenu extends JFrame{
 		startPanel.setLayout(gl);
 		
 	}
+	
 	public static void main(String[] args) {
 		MainMenu a = new MainMenu();
 	}
