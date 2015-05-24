@@ -2,6 +2,7 @@
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
+
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
@@ -162,7 +163,10 @@ public class GUI extends JFrame implements MouseListener, MouseMotionListener, R
                 }
                 else
                 {
-                    System.out.println("Winner");
+                	players[curr].getName();
+                	JOptionPane.showMessageDialog(new JFrame(), players[1-curr].getName()+" is the Winner!", "Results", JOptionPane.INFORMATION_MESSAGE);
+                	System.out.println("Winner");
+                	System.exit(0);
                 }
                 Thread.sleep ( 20 );
             }
