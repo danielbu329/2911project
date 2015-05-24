@@ -37,11 +37,8 @@ public class MainMenu extends JFrame{
 	JPanel choosePlayersPanel;
 	JPanel onePlayerPanel;
 	JPanel twoPlayerPanel;
-	// The Image to store the background image in.
-    Image img;
 	
 	public MainMenu() {
-		img = Toolkit.getDefaultToolkit().createImage("background.png");
 //		CardLayout cl = new CardLayout();
 		setTitle("Connect 4");
 		setLocation(150,200);
