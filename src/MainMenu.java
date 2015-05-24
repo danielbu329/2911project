@@ -37,9 +37,11 @@ public class MainMenu extends JFrame{
 	JPanel choosePlayersPanel;
 	JPanel onePlayerPanel;
 	JPanel twoPlayerPanel;
+	// The Image to store the background image in.
+    Image img;
 	
 	public MainMenu() {
-		
+		img = Toolkit.getDefaultToolkit().createImage("background.png");
 //		CardLayout cl = new CardLayout();
 		setTitle("Connect 4");
 		setLocation(150,200);
@@ -63,16 +65,18 @@ public class MainMenu extends JFrame{
 //		}
 //	
 		createStartPanel();
-		incrementSmoothly(load, 25);
-		System.out.println(load.getValue());
+		incrementSmoothly(load, 20);
 		createChoosePlayersPanel();
-		incrementSmoothly(load, 25);
+		incrementSmoothly(load, 20);
 		createOnePlayerPanel();
-		incrementSmoothly(load, 25);
+		incrementSmoothly(load, 20);
+		createTwoPlayerPanel();
+		incrementSmoothly(load,20);
 		cards.add(startPanel, "Base");
 		cards.add(choosePlayersPanel, "ChoosePlayers");
 		cards.add(onePlayerPanel, "OnePlayer");
-		incrementSmoothly(load, 25);
+		cards.add(twoPlayerPanel, "TwoPlayer");
+		incrementSmoothly(load, 20);
 		add(cards);
 		load.setVisible(false);
 		cl.show(cards, "Base");
@@ -160,6 +164,17 @@ public class MainMenu extends JFrame{
 			}
 			
 		});
+		btnTwoPlayer.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				CardLayout cl = (CardLayout) cards.getLayout();
+				cl.show(cards, "TwoPlayer");
+				revalidate();
+				repaint();
+			}
+			
+		});
 
 		gl.setAutoCreateContainerGaps(true);
 //		gl.setAutoCreateGaps(isEnabled());
@@ -186,7 +201,6 @@ public class MainMenu extends JFrame{
 				);
 		choosePlayersPanel.setLayout(gl);
 	}
-
 
 	private void createStartPanel() {
 		startPanel = new JPanel();
@@ -237,13 +251,12 @@ public class MainMenu extends JFrame{
 				.addComponent(btnStart)
 				.addGap(30)
 				.addComponent(btnLoad)
-				.addGap(30)
+				.addGap(80)
 				.addComponent(btnQuit)
 				);
 		startPanel.setLayout(gl);
 		
 	}
-	
 	
 	private void createOnePlayerPanel() {
 		onePlayerPanel = new JPanel();
@@ -329,11 +342,92 @@ public class MainMenu extends JFrame{
 				.addComponent(radioMedium)
 				.addComponent(radioHard)
 				.addComponent(btnStartGame)
-				.addGap(75)
+				.addGap(25)
 				.addComponent(btnBack)
 //				.addComponent(btnMainMenu)
 				);
 		onePlayerPanel.setLayout(gl);
+	}
+	
+	private void createTwoPlayerPanel() {
+		twoPlayerPanel = new JPanel();
+		twoPlayerPanel.setVisible(true);
+		
+		GroupLayout gl = new GroupLayout(twoPlayerPanel);
+		JLabel welcomeMessage = new JLabel("Creating Two Player Game...");
+		JLabel labelName1 = new JLabel("Enter Player 1 name:");
+		JTextField textName1 = new JTextField();
+		JLabel labelName2 = new JLabel("Enter Player 2 name:");
+		JTextField textName2 = new JTextField();
+		//possibly add choice on color?
+		JButton btnStartGame = new JButton("Start Game");
+		JButton btnBack = new JButton("Cancel Game");
+	
+		
+		textName1.setMinimumSize(new Dimension(300,25));
+		textName1.setMaximumSize(new Dimension(300,25));
+		textName2.setMinimumSize(new Dimension(300,25));
+		textName2.setMaximumSize(new Dimension(300,25));
+		btnStartGame.setMinimumSize(new Dimension(300,40));
+		btnBack.setMinimumSize(new Dimension(200,40));
+		welcomeMessage.setFont(new Font("Serif", Font.ITALIC, 30));
+		
+		btnBack.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				CardLayout cl = (CardLayout) cards.getLayout();
+				cl.show(cards, "ChoosePlayers");
+				revalidate();
+				repaint();
+			}
+			
+		});
+
+		gl.setAutoCreateContainerGaps(true);
+		gl.setAutoCreateGaps(isEnabled());
+		gl.setHorizontalGroup(gl.createSequentialGroup()
+				.addGap(115)
+				
+				.addGroup(gl.createParallelGroup(GroupLayout.Alignment.CENTER)
+				.addComponent(welcomeMessage)
+				.addGroup(gl.createSequentialGroup()
+					.addGroup(gl.createParallelGroup(GroupLayout.Alignment.LEADING)
+						.addComponent(labelName1)
+						.addComponent(labelName2)
+					 )
+					 .addGroup(gl.createParallelGroup(GroupLayout.Alignment.LEADING)
+						.addComponent(textName1)
+						.addComponent(textName2)
+					)
+				)
+				.addComponent(btnStartGame)
+				.addComponent(btnBack)
+//				.addComponent(btnMainMenu)
+				)
+				
+		);
+		
+		
+		gl.setVerticalGroup(gl.createSequentialGroup()
+				.addGap(200)
+				.addComponent(welcomeMessage)
+//				.addGap(30)
+				.addGroup(gl.createParallelGroup(GroupLayout.Alignment.CENTER)
+				.addComponent(labelName1)
+				.addComponent(textName1)
+				)
+				.addGroup(gl.createParallelGroup(GroupLayout.Alignment.LEADING)
+					.addComponent(labelName2)
+					.addComponent(textName2)
+					
+				)
+				.addComponent(btnStartGame)
+				.addGap(75)
+				.addComponent(btnBack)
+//				.addComponent(btnMainMenu)
+				);
+		twoPlayerPanel.setLayout(gl);
 	}
 	
 	public static void main(String[] args) {
@@ -343,10 +437,6 @@ public class MainMenu extends JFrame{
 	
 //	private ImageIcon getImage(String filename)
 //    {
-
-	private void createTwoPlayerPanel() {
-		
-	}
 	
 	//
 //            ImageIcon image = new ImageIcon("src/menu.jpg");
