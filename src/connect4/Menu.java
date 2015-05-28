@@ -184,7 +184,37 @@ public class Menu
                     {
                         text = text.substring(1);
                         if (text.equals("Sound")) {
-                        	item = new JCheckBoxMenuItem(text);   //New item to add
+                        	String cmd = title + "/" + text;
+                        	item = new JMenu(text);   //New item to add
+                        	ButtonGroup group = new ButtonGroup();
+                        	final JMenuItem on = new JRadioButtonMenuItem("On");
+                        	final JMenuItem off = new JRadioButtonMenuItem("Off");
+                        	group.add(on);
+                        	group.add(off);
+                        	group.setSelected(on.getModel(), true);
+                        	on.setActionCommand(cmd);
+                        	off.setActionCommand(cmd);
+                        	on.addActionListener(new ActionListener() {
+
+								@Override
+								public void actionPerformed(ActionEvent e) {
+									on.setEnabled(true);
+									menuAction(e.getActionCommand());
+								}
+                        		
+                        	});
+                        	
+                        	off.addActionListener(new ActionListener() {
+
+								@Override
+								public void actionPerformed(ActionEvent e) {
+									off.setEnabled(true);
+									menuAction(e.getActionCommand());
+								}
+                        		
+                        	});
+                        	item.add(on);
+                        	item.add(off);
                         } else {
                         	item = new JMenuItem(text);   //New item to add
                         }
