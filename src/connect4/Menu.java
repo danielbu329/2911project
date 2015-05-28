@@ -32,6 +32,7 @@ public class Menu
     private JMenu score1;
     private JMenu score2;
 
+    
     public boolean playSounds()
     {
         return sound;
@@ -51,7 +52,7 @@ public class Menu
         items = new HashMap<>(20);
         choices = "Human/Easy/Medium/Hard".split("/");
         JMenuBar menubar = new JMenuBar();      //Create a menu bar
-        JMenu menu = addMenu(menubar, "Game", "$New Game/--/+Sound/--/Exit".split("/"));
+        JMenu menu = addMenu(menubar, "Game", "!<New Game>/Normal/Speed/Endless/--/+Sound/--/Exit".split("/"));
         menu.setMnemonic(KeyEvent.VK_G);
         menu = addMenu(menubar, "Player 1", "Human/--/!Computer/Easy/Medium/Hard".split("/"));
         menu.setIcon(player1);
@@ -67,6 +68,8 @@ public class Menu
         score2 = addMenu(menubar, "000000", empty);
         score2.setIcon(player2);
         score2.setFont(scoreFont);
+        
+
 
         select("Player 1", "Human");
         //select("Player 2", "Medium");
@@ -112,6 +115,7 @@ public class Menu
                 soundItem.setSelected(sound);
                 return;
             }
+
             for (Mode mode : Mode.values())
             {
                 String modeName = mode.toString();
@@ -122,7 +126,7 @@ public class Menu
                     selected.setSelected(false);
             }
             items.get(menu).setSelected(true);
-//
+
             Mode mode = gui.mode(item);
             if (mode.tutorial())
             {
@@ -173,40 +177,17 @@ public class Menu
                     menu.add(item);                         //Add it to the root
                     item.setEnabled(false);
                 }
-                else if (ch == '$') 
-                {
-                	text = text.substring(1);
-                	JMenu submenu = new JMenu(text);
-                	JMenuItem normal = new JMenuItem("Normal", getIcon("icontinyboard.png"));
-                	JMenuItem speed = new JMenuItem("Speed", getIcon("iconspeed.png"));
-                	JMenuItem endless =new JMenuItem("Endless", getIcon("iconendless.png")) ;
-                	submenu.add(normal);
-                	submenu.add(speed);
-                	submenu.add(endless);
-                	
-                	String cmd = title + "/" + "Normal";
-                    items.put(cmd, normal);
-                    normal.setActionCommand(cmd);
-                    normal.addActionListener(menuSelected);   //When selected, call the menuSelected listener
-                
-                    items.put(title + "/" + "Speed", speed);
-                    speed.setActionCommand(title + "/" + "Speed");
-                    speed.addActionListener(menuSelected);   //When selected, call the menuSelected listener
-                
-                    cmd = title + "/" + "Endless";
-                    items.put(cmd, endless);
-                    endless.setActionCommand(cmd);
-                    endless.addActionListener(menuSelected);   //When selected, call the menuSelected listener
-  
-                    menu.add(submenu);
-                }
                 else
                 {
                     JMenuItem item;
                     if (ch == '+')
                     {
                         text = text.substring(1);
-                		item = new JCheckBoxMenuItem(text);   //New item to add
+                        if (text.equals("Sound")) {
+                        	item = new JCheckBoxMenuItem(text);   //New item to add
+                        } else {
+                        	item = new JMenuItem(text);   //New item to add
+                        }
   
                     } 
                     else
@@ -227,7 +208,91 @@ public class Menu
                     	} else if (text.equals("Hard")) {
                     	    ImageIcon icon = getIcon("iconhard.png");
                     		item = new JMenuItem(text, icon);
-                    	} else {
+                    	}  else if (text.equals("Normal") || text.equals("Speed") || text.equals("Endless")) {
+                        	item = new JMenu(text);
+                        	String cmd = title + "/" + text;
+                        	JMenuItem hvh = new JMenuItem("Human vs Human");
+                        	hvh.setActionCommand(cmd);
+                        	hvh.addActionListener(new ActionListener() {
+
+								@Override
+								public void actionPerformed(ActionEvent e) {
+									select("Player 1", "Human");
+									select("Player 2", "Human");
+									menuAction(e.getActionCommand()); 
+								}
+                        		
+                        	});
+                        	JMenuItem hvc = new JMenuItem("Human vs Computer");
+                        	hvc.setActionCommand(cmd);
+                        	hvc.addActionListener(new ActionListener() {
+
+								@Override
+								public void actionPerformed(ActionEvent e) {
+									Object[] difficulties =  {"Easy", "Medium", "Hard"};
+									String difficulty = null;
+									difficulty = (String)JOptionPane.showInputDialog(
+								                  gui,
+								                  "Select the difficulty of Computer",
+								                  e.getActionCommand().substring(e.getActionCommand().indexOf('/')+1) +" Mode",
+								                  JOptionPane.PLAIN_MESSAGE,
+								                  getIcon(null),
+								                  difficulties,
+								                  "Easy");
+									select("Player 1", "Human");
+									if (difficulty != null)
+										select("Player 2", difficulty);
+									else 
+										select("Player 2", "Hard");
+									menuAction(e.getActionCommand()); 
+								}
+                        		
+                        	});
+                        	
+                        	JMenuItem cvc = new JMenuItem("Computer vs Computer");
+                        	cvc.setActionCommand(cmd);
+                        	cvc.addActionListener(new ActionListener() {
+
+								@Override
+								public void actionPerformed(ActionEvent e) {
+									Object[] difficulties =  {"Easy", "Medium", "Hard"};
+									String computerA = null;
+									String computerB = null;
+
+									computerA = (String)JOptionPane.showInputDialog(
+							                  gui,
+							                  "Select the difficulty of Computer 1",
+							                  e.getActionCommand().substring(e.getActionCommand().indexOf('/')+1) +" Mode",
+							                  JOptionPane.PLAIN_MESSAGE,
+							                  getIcon(null),
+							                  difficulties,
+							                  "Easy");
+									
+									computerB = (String)JOptionPane.showInputDialog(
+							                  gui,
+							                  "Select the difficulty of Computer 2",
+							                  e.getActionCommand().substring(e.getActionCommand().indexOf('/')+1) +" Mode",
+							                  JOptionPane.PLAIN_MESSAGE,
+							                  getIcon(null),
+							                  difficulties,
+							                  "Easy");
+									if (computerA != null)
+										select("Player 1", computerA);
+									else 
+										select("Player 1", "Hard");
+									if (computerB != null)
+										select("Player 2", computerB);
+									else 
+										select("Player 2", "Hard");
+								menuAction(e.getActionCommand()); 
+
+								}
+                        	});
+                        	
+                        	item.add(hvc);
+                        	item.add(cvc);
+                        	item.add(hvh);
+                        } else {
 //                    		System.out.println("adding ("+text+")");
                     		item = new JMenuItem(text);   //New item to add
                     	}
