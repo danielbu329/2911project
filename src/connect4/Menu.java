@@ -51,7 +51,7 @@ public class Menu
         items = new HashMap<>(20);
         choices = "Human/Easy/Medium/Hard".split("/");
         JMenuBar menubar = new JMenuBar();      //Create a menu bar
-        JMenu menu = addMenu(menubar, "Game", "+Normal/+Speed/+Endless/--/+Sound/--/Exit".split("/"));
+        JMenu menu = addMenu(menubar, "Game", "$New Game/--/+Sound/--/Exit".split("/"));
         menu.setMnemonic(KeyEvent.VK_G);
         menu = addMenu(menubar, "Player 1", "Human/--/!Computer/Easy/Medium/Hard".split("/"));
         menu.setIcon(player1);
@@ -122,6 +122,7 @@ public class Menu
                     selected.setSelected(false);
             }
             items.get(menu).setSelected(true);
+//
             Mode mode = gui.mode(item);
             if (mode.tutorial())
             {
@@ -172,23 +173,42 @@ public class Menu
                     menu.add(item);                         //Add it to the root
                     item.setEnabled(false);
                 }
+                else if (ch == '$') 
+                {
+                	text = text.substring(1);
+                	JMenu submenu = new JMenu(text);
+                	JMenuItem normal = new JMenuItem("Normal", getIcon("icontinyboard.png"));
+                	JMenuItem speed = new JMenuItem("Speed", getIcon("iconspeed.png"));
+                	JMenuItem endless =new JMenuItem("Endless", getIcon("iconendless.png")) ;
+                	submenu.add(normal);
+                	submenu.add(speed);
+                	submenu.add(endless);
+                	
+                	String cmd = title + "/" + "Normal";
+                    items.put(cmd, normal);
+                    normal.setActionCommand(cmd);
+                    normal.addActionListener(menuSelected);   //When selected, call the menuSelected listener
+                
+                    items.put(title + "/" + "Speed", speed);
+                    speed.setActionCommand(title + "/" + "Speed");
+                    speed.addActionListener(menuSelected);   //When selected, call the menuSelected listener
+                
+                    cmd = title + "/" + "Endless";
+                    items.put(cmd, endless);
+                    endless.setActionCommand(cmd);
+                    endless.addActionListener(menuSelected);   //When selected, call the menuSelected listener
+  
+                    menu.add(submenu);
+                }
                 else
                 {
                     JMenuItem item;
                     if (ch == '+')
                     {
                         text = text.substring(1);
-                        if (text.equals("Speed")) {
-                    	    ImageIcon icon = getIcon("iconspeed.png");
-                    		item = new JRadioButtonMenuItem(text, icon);
-                    		//item.setHorizontalTextPosition(JMenuItem.RIGHT);
-                    	} else if (text.equals("Normal")) {
-                    	    ImageIcon icon =getIcon("icontinyboard.png");;
-                    		item = new JRadioButtonMenuItem(text, icon);
-                    	} else {
-                    		item = new JRadioButtonMenuItem(text);   //New item to add
-                    	}
-                    }
+                		item = new JCheckBoxMenuItem(text);   //New item to add
+  
+                    } 
                     else
                     {
                         //item = new JMenuItem(text);   //New item to add
@@ -201,10 +221,10 @@ public class Menu
                     	} else if (text.equals("Easy")) {
                     	    ImageIcon icon = getIcon("iconeasy.png");
                     		item = new JMenuItem(text, icon);
-                    	}else if (text.equals("Medium")) {
+                    	} else if (text.equals("Medium")) {
                     	    ImageIcon icon = getIcon("iconmedium.png");
                     		item = new JMenuItem(text, icon);
-                    	}else if (text.equals("Hard")) {
+                    	} else if (text.equals("Hard")) {
                     	    ImageIcon icon = getIcon("iconhard.png");
                     		item = new JMenuItem(text, icon);
                     	} else {
@@ -261,6 +281,7 @@ public class Menu
             symbol = 'X';
         }
         items.get(menu).setIcon(icon);
+        //names
         if (difficulty.equals("Human"))
         {
             players[which] = new Human("Human", symbol);
