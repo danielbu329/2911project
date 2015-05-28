@@ -1,4 +1,4 @@
-//package connect4;
+package connect4;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -8,12 +8,14 @@ public class Piece
     private Image image;
     private int xpos, ypos;
     private int w, h;
-    private int pixels[];
-    private int lastX, lastY;
     private boolean dropping;
     private boolean finished;
     private int yvel;
     private int ystop;
+    private int column;
+    private int row;
+    private char symbol;
+    private Board board;
 
     public int getColumn()
     {
@@ -22,35 +24,30 @@ public class Piece
         return column;
     }
 
-    private int column;
-
-    public Piece(Image image, int x, int y)
+    public Piece(Image image, int x, int y, Board board, char symbol)
     {
         this.image = image;
         xpos = x;
         ypos = y;
         w = image.getWidth(null);
         h = image.getHeight(null);
-        pixels = new int[w * h];
-        lastX = lastY = 0;
         finished = false;
+        this.board = board;
+        this.symbol = symbol;
     }
 
-    public void draw(Graphics g, BufferedImage background, int x, int y)
+    public void draw(Graphics g, int x, int y)
     {
         int w = image.getWidth(null);
         int h = image.getHeight(null);
-        //int pixels = background.
-        //BufferedImage segment = background.getSubimage(xpos, ypos, w, h);
-        //g.drawImage(segment, xpos, ypos, null);
         g.drawImage(image, x, y, null);
         xpos = x;
         ypos = y;
     }
 
-    public void draw(Graphics g, BufferedImage backgrond)
+    public void draw(Graphics g)
     {
-        draw(g, backgrond, xpos, ypos);
+        draw(g, xpos, ypos);
         update();
     }
 
@@ -74,6 +71,7 @@ public class Piece
                 yvel = -yvel / 2;
                 if (yvel == 0)
                 {
+                    board.set(row, column, symbol);
                     finished = true;
                 }
             }
@@ -86,22 +84,49 @@ public class Piece
         {
             xpos = x;
             ypos = y;
+            finished = false;
         }
     }
 
-    public void drop(int column, int endY)
+    public void drop(int x, int y, int column, int endY, int row, char symbol)
     {
         if (!dropping)
         {
             dropping = true;
+            finished = false;
+            xpos = x;
+            ypos = y;
             yvel = 0;
             ystop = endY;
             this.column = column;
+            this.row = row;
+            this.symbol = symbol;
         }
     }
 
     public void setImage(Image image)
     {
         this.image = image;
+    }
+
+    public boolean isDropping()
+    {
+        return dropping;
+    }
+
+    public char getSymbol()
+    {
+        return symbol;
+    }
+
+    public void dropped()
+    {
+        dropping = false;
+    }
+
+    public void reset()
+    {
+        dropping = false;
+        finished = true;
     }
 }

@@ -1,8 +1,6 @@
+package connect4;
 
-
-//package connect4;
-
-public class Results 
+public class Results
 {
     //Dialog
     //Winner ICON (Red / Yellow)
