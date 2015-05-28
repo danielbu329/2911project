@@ -100,6 +100,7 @@ public class GUI extends JFrame implements Runnable
         hand = new Sound("hand.wav");
         drop1 = new Sound("drop1.wav");
         drop2 = new Sound("drop2.wav");
+ 
         mode = changeMode;
         players = menu.getPlayers();
         panel = new GUIPanel(this, red, yellow, pieces[0], gameboard, font, board, getBackground());

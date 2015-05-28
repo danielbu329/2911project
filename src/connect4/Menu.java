@@ -68,8 +68,6 @@ public class Menu
         score2 = addMenu(menubar, "000000", empty);
         score2.setIcon(player2);
         score2.setFont(scoreFont);
-        
-
 
         select("Player 1", "Human");
         //select("Player 2", "Medium");
@@ -184,6 +182,7 @@ public class Menu
                     {
                         text = text.substring(1);
                         if (text.equals("Sound")) {
+                        	// add sub menus for Sound
                         	String cmd = title + "/" + text;
                         	item = new JMenu(text);   //New item to add
                         	ButtonGroup group = new ButtonGroup();
@@ -195,23 +194,18 @@ public class Menu
                         	on.setActionCommand(cmd);
                         	off.setActionCommand(cmd);
                         	on.addActionListener(new ActionListener() {
-
 								@Override
 								public void actionPerformed(ActionEvent e) {
 									on.setEnabled(true);
 									menuAction(e.getActionCommand());
 								}
-                        		
                         	});
-                        	
                         	off.addActionListener(new ActionListener() {
-
 								@Override
 								public void actionPerformed(ActionEvent e) {
 									off.setEnabled(true);
 									menuAction(e.getActionCommand());
 								}
-                        		
                         	});
                         	item.add(on);
                         	item.add(off);
@@ -222,8 +216,6 @@ public class Menu
                     } 
                     else
                     {
-                        //item = new JMenuItem(text);   //New item to add
-                    	//System.out.println(text);
                     	if (text.equals("Exit")) {
                     		//System.out.println("adding exit...");
                     	    ImageIcon icon = getIcon("iconexit.png");
@@ -239,6 +231,7 @@ public class Menu
                     	    ImageIcon icon = getIcon("iconhard.png");
                     		item = new JMenuItem(text, icon);
                     	}  else if (text.equals("Normal") || text.equals("Speed") || text.equals("Endless")) {
+                    		// Add submenus for Normal, Speed, and Endless gamemodes
                         	item = new JMenu(text);
                         	String cmd = title + "/" + text;
                         	JMenuItem hvh = new JMenuItem("Human vs Human");
@@ -247,6 +240,8 @@ public class Menu
 
 								@Override
 								public void actionPerformed(ActionEvent e) {
+									if (!checkDiscardGame())
+										return;
 									select("Player 1", "Human");
 									select("Player 2", "Human");
 									menuAction(e.getActionCommand()); 
@@ -259,6 +254,8 @@ public class Menu
 
 								@Override
 								public void actionPerformed(ActionEvent e) {
+									if (!checkDiscardGame())
+										return;
 									Object[] difficulties =  {"Easy", "Medium", "Hard"};
 									String difficulty = null;
 									difficulty = (String)JOptionPane.showInputDialog(
@@ -285,6 +282,8 @@ public class Menu
 
 								@Override
 								public void actionPerformed(ActionEvent e) {
+									if (!checkDiscardGame())
+										return;
 									Object[] difficulties =  {"Easy", "Medium", "Hard"};
 									String computerA = null;
 									String computerB = null;
@@ -318,12 +317,11 @@ public class Menu
 
 								}
                         	});
-                        	
+                        	item.add(hvh);
                         	item.add(hvc);
                         	item.add(cvc);
-                        	item.add(hvh);
+                        	
                         } else {
-//                    		System.out.println("adding ("+text+")");
                     		item = new JMenuItem(text);   //New item to add
                     	}
                     }
@@ -341,6 +339,18 @@ public class Menu
         }
         menubar.add(menu);							//Add it to the menubar
         return menu;
+    }
+    
+    private boolean checkDiscardGame() {
+    	int n = JOptionPane.showConfirmDialog(
+    		    gui,
+    		    "Leave Current Game?",
+    		    "",
+    		    JOptionPane.YES_NO_OPTION);
+    	if (n == JOptionPane.YES_OPTION)
+    			return true;
+    	else
+    		return false;
     }
     
     private ImageIcon getIcon(String fileName) {
