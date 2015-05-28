@@ -72,7 +72,7 @@ public class GUI extends JFrame implements Runnable
     public GUI()
     {
         setTitle("Connect 4");
-        setSize(701, 798);
+        setSize(701, 750);
         setResizable(false);
         setLocation(150, 50);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
