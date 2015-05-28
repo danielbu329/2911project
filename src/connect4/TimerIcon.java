@@ -6,7 +6,7 @@ import java.awt.image.BufferedImage;
 
 public class TimerIcon implements Icon
 {
-    public static final int TIMER_HEIGHT = 40;
+    public static final int TIMER_HEIGHT = 17;
 
     private Image timerImages[];
 
