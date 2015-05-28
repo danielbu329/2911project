@@ -83,8 +83,8 @@ public class GUI extends JFrame implements Runnable
         bonus = new int[NUM_PLAYERS];
         yellow = load("yellow.png");
         red = load("red.png");
-        Myellow = load("MenuCoinYellow.png");
-        Mred = load("MenuCoinRed.png");
+        Myellow = load("iconMenuCoinYellow.png");
+        Mred = load("iconMenuCoinRed.png");
         Font font = loadFont("fake-receipt.ttf", 80);
         board = new Board(NUM_COLUMNS, NUM_ROWS, yellow, red);
         pieces = new Piece[NUM_PLAYERS];
