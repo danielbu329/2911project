@@ -1,5 +1,10 @@
 package connect4;
 
+import java.awt.AWTException;
+import java.awt.MouseInfo;
+import java.awt.Point;
+import java.awt.PointerInfo;
+import java.awt.Robot;
 import java.awt.event.*;
 
 public class GUIInput implements MouseListener, MouseMotionListener, KeyListener
@@ -14,7 +19,22 @@ public class GUIInput implements MouseListener, MouseMotionListener, KeyListener
     {
         this.current = current;
         this.player = player;
-        column = 4;
+        PointerInfo a = MouseInfo.getPointerInfo();
+        Point b = a.getLocation();
+        System.out.println(b.getX());
+        column = (int) b.getX() / 100 + 1;
+        try {
+      	    // These coordinates are screen coordinates
+      	    int xCoord = (int) b.getX()+1;
+      	    int yCoord = (int) b.getY();
+
+      	    // Move the cursor one pixel to the right and profit
+      	    // They'll never know
+      	    Robot robot = new Robot();
+      	    robot.mouseMove(xCoord, yCoord);
+      	} catch (AWTException e) {
+      	}
+        //column = 4;
     }
 
     GUIInput(GUI gui, GUIPanel panel, Piece current)
@@ -35,7 +55,7 @@ public class GUIInput implements MouseListener, MouseMotionListener, KeyListener
      */
     private int getX(MouseEvent event)
     {
-        int x = (event.getX() + 40) / 100;
+        int x = (event.getX()) / 100;
         return x * 100 + 19;
     }
 
