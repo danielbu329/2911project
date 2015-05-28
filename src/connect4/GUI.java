@@ -21,6 +21,8 @@ public class GUI extends JFrame implements Runnable
     private Thread animation;
     private Image yellow;
     private Image red;
+    private Image Myellow;
+    private Image Mred;
     private int[] columns;
     private int[] rows;
     private int[] score;
@@ -79,6 +81,8 @@ public class GUI extends JFrame implements Runnable
         bonus = new int[NUM_PLAYERS];
         yellow = load("yellow.png");
         red = load("red.png");
+        Myellow = load("MenuCoinYellow.png");
+        Mred = load("MenuCoinRed.png");
         Font font = loadFont("fake-receipt.ttf", 80);
         board = new Board(NUM_COLUMNS, NUM_ROWS, yellow, red);
         pieces = new Piece[NUM_PLAYERS];
@@ -89,7 +93,7 @@ public class GUI extends JFrame implements Runnable
         Image gameboard = load("board.png");
         columns = new int[]{19, 119, 219, 319, 419, 519, 619};
         rows = new int[]{118, 218, 318, 418, 518, 618};
-        menu = new Menu(this, yellow, red);
+        menu = new Menu(this, Myellow, Mred);
         start = new Sound("start.wav");
         hand = new Sound("hand.wav");
         drop1 = new Sound("drop1.wav");
