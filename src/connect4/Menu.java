@@ -2,11 +2,15 @@ package connect4;
 
 import sun.security.provider.PolicySpiFile;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
+
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
 
 public class Menu
@@ -162,7 +166,7 @@ public class Menu
                 char ch = text.charAt(0);
                 if (ch == '!')
                 {
-                    JMenuItem item = new JMenuItem(text.substring(1));   //New item to add
+                	JMenuItem item = new JMenuItem(text.substring(1));
                     menu.add(item);                         //Add it to the root
                     item.setEnabled(false);
                 }
@@ -172,11 +176,38 @@ public class Menu
                     if (ch == '+')
                     {
                         text = text.substring(1);
-                        item = new JRadioButtonMenuItem(text);   //New item to add
+                        if (text.equals("Speed")) {
+                    	    ImageIcon icon = getIcon("iconspeed.png");
+                    		item = new JRadioButtonMenuItem(text, icon);
+                    		//item.setHorizontalTextPosition(JMenuItem.RIGHT);
+                    	} else if (text.equals("Normal")) {
+                    	    ImageIcon icon =getIcon("icontinyboard.png");;
+                    		item = new JRadioButtonMenuItem(text, icon);
+                    	} else {
+                    		item = new JRadioButtonMenuItem(text);   //New item to add
+                    	}
                     }
                     else
                     {
-                        item = new JMenuItem(text);   //New item to add
+                        //item = new JMenuItem(text);   //New item to add
+                    	System.out.println(text);
+                    	if (text.equals("Exit")) {
+                    		System.out.println("adding exit...");
+                    	    ImageIcon icon = getIcon("iconexit.png");
+                    		item = new JMenuItem(text, icon);
+                    	} else if (text.equals("Easy")) {
+                    	    ImageIcon icon = getIcon("iconeasy.png");
+                    		item = new JMenuItem(text, icon);
+                    	}else if (text.equals("Medium")) {
+                    	    ImageIcon icon = getIcon("iconmedium.png");
+                    		item = new JMenuItem(text, icon);
+                    	}else if (text.equals("Hard")) {
+                    	    ImageIcon icon = getIcon("iconhard.png");
+                    		item = new JMenuItem(text, icon);
+                    	} else {
+//                    		System.out.println("adding ("+text+")");
+                    		item = new JMenuItem(text);   //New item to add
+                    	}
                     }
                     String cmd = title + "/" + text;
                     items.put(cmd, item);
@@ -192,6 +223,19 @@ public class Menu
         }
         menubar.add(menu);							//Add it to the menubar
         return menu;
+    }
+    
+    private ImageIcon getIcon(String fileName) {
+    	 try
+         {
+    		 ImageIcon icon = new ImageIcon("src/connect4/"+fileName);
+    		 return icon;
+         }
+         catch (Exception err)
+         {
+             System.out.println("Exception:" + err);
+         }
+    	 return null;
     }
 
     public void select(String player, String difficulty)

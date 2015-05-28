@@ -21,7 +21,6 @@ public class GUIInput implements MouseListener, MouseMotionListener, KeyListener
         this.player = player;
         PointerInfo a = MouseInfo.getPointerInfo();
         Point b = a.getLocation();
-        System.out.println(b.getX());
         column = (int) b.getX() / 100 + 1;
         try {
       	    // These coordinates are screen coordinates
