@@ -74,6 +74,7 @@ public class GUI extends JFrame implements Runnable
         setTitle("Connect 4");
         setSize(701, 750);
         setResizable(false);
+        setIconImage(load("programicon.png"));
         setLocation(150, 50);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         rnd = new Random();
