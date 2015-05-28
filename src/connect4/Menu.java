@@ -8,6 +8,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -50,8 +51,9 @@ public class Menu
         items = new HashMap<>(20);
         choices = "Human/Easy/Medium/Hard".split("/");
         JMenuBar menubar = new JMenuBar();      //Create a menu bar
-        addMenu(menubar, "Game", "+Normal/+Speed/+Endless/--/+Sound/--/Exit".split("/"));
-        JMenu menu = addMenu(menubar, "Player 1", "Human/--/!Computer/Easy/Medium/Hard".split("/"));
+        JMenu menu = addMenu(menubar, "Game", "+Normal/+Speed/+Endless/--/+Sound/--/Exit".split("/"));
+        menu.setMnemonic(KeyEvent.VK_G);
+        menu = addMenu(menubar, "Player 1", "Human/--/!Computer/Easy/Medium/Hard".split("/"));
         menu.setIcon(player1);
         menu = addMenu(menubar, "Player 2", "Human/--/!Computer/Easy/Medium/Hard".split("/"));
         menu.setIcon(player2);
@@ -190,11 +192,12 @@ public class Menu
                     else
                     {
                         //item = new JMenuItem(text);   //New item to add
-                    	System.out.println(text);
+                    	//System.out.println(text);
                     	if (text.equals("Exit")) {
-                    		System.out.println("adding exit...");
+                    		//System.out.println("adding exit...");
                     	    ImageIcon icon = getIcon("iconexit.png");
                     		item = new JMenuItem(text, icon);
+                    		item.setMnemonic(KeyEvent.VK_Q);
                     	} else if (text.equals("Easy")) {
                     	    ImageIcon icon = getIcon("iconeasy.png");
                     		item = new JMenuItem(text, icon);
