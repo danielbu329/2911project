@@ -41,7 +41,7 @@ public class Menu
         player2 = new PieceIcon(red);
         players = new Player[GUI.NUM_PLAYERS * 2];
         gui = main;
-        Font scoreFont = new Font("Times", Font.BOLD, 24);
+        Font scoreFont = new Font("Times", Font.BOLD, 12);
 
         items = new HashMap<>(20);
         choices = "Human/Easy/Medium/Hard".split("/");
