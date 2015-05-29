@@ -64,7 +64,6 @@ public class Human implements Player
         }
 
         return column - 1;
-        //return valid(-1, board);
     }
 
     @Override

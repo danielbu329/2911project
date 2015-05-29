@@ -11,11 +11,6 @@ import java.util.HashMap;
 
 public class Menu
 {
-    //Menu Bar
-    //Game - Normal / Speed / Endless / -- / Exit
-    //Player 1 - Human / Computer Easy / Computer Medium / Computer Hard
-    //Player 2 - Human / Computer Easy / Computer Medium / Computer Hard
-
     private GUI gui;
     private Player players[];
     private HashMap<String, JMenuItem> items;
@@ -62,14 +57,9 @@ public class Menu
         items = new HashMap<>(20);
         choices = "Human/Easy/Medium/Hard".split("/");
         JMenuBar menubar = new JMenuBar();      //Create a menu bar
-     //   JMenu menu = addMenu(menubar, "Game", "Restart Game/Normal/Speed/Endless/--/+Sound/--/Exit".split("/"));
         JMenu menu = addMenu(menubar, "Game", "Restart Game/--/!New Game/Normal/Speed/Endless/--/+Sound/--/Exit".split("/"));
         menu.setMnemonic(KeyEvent.VK_G);
         menu.setIcon(getIcon("iconmenu.png"));
-//        menu = addMenu(menubar, "Player 1", "Human/--/!Computer/Easy/Medium/Hard".split("/"));
-//        menu.setIcon(player1);
-//        menu = addMenu(menubar, "Player 2", "Human/--/!Computer/Easy/Medium/Hard".split("/"));
-//        menu.setIcon(player2);
         
         menu = addMenu(menubar, "Mode", "-Modes".split("/"));
         menu.setIcon(getIcon("icontinyboard.png"));
@@ -107,14 +97,11 @@ public class Menu
         score2.setFont(scoreFont);
         
         select("Player 1", "Human");
-        //select("Player 2", "Medium");
-        //select("Player 1", "Hard");
         select("Player 2", "Hard");
        
         main.setJMenuBar(menubar);                   //Set the menu bar as active
         menuAction("Game/Normal");
        
-        //menuAction("Game/Endless");
         menuAction("Game/Sound");
     }
     
@@ -153,28 +140,10 @@ public class Menu
             }
             if (item.equals("Sound"))
             {
-//                JMenuItem soundItem = items.get(menu);
-                //soundItem.setIcon(getIcon("iconsound.png"));
                 sound = !sound;
-//                soundItem.setSelected(sound);
                 return;
             }
-            
-            if (item.equals("New Game"))
-            {
-            	//restart game
-            }
 
-            /*for (Mode mode : Mode.values())
-            {
-                String modeName = mode.toString();
-                modeName = modeName.charAt(0) + modeName.substring(1).toLowerCase();
-                String menuItem = title + '/' + modeName;
-//                JMenuItem selected = items.get(menuItem);
-//                if (selected != null)
-//                    selected.setSelected(false);
-            }
-//            items.get(menu).setSelected(true);*/
             Mode mode = gui.mode(item);
             currMode = mode;
             if (mode.tutorial())

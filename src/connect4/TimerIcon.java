@@ -63,7 +63,6 @@ public class TimerIcon implements Icon
             }
             Graphics g = image.getGraphics();
             g.setColor(fill);
-            //g.fill3DRect(0, 0, width, TIMER_HEIGHT, false);
             g.fillRect(0, 0, width, TIMER_HEIGHT);
             g.dispose();
             timerImages[frame] = image;

@@ -1,7 +1,5 @@
 package connect4;
 
-import java.util.Arrays;
-
 public class Column
 {
     private char cells[];

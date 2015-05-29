@@ -2,7 +2,6 @@ package connect4;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 
 public class GUIPanel extends JPanel
