@@ -7,7 +7,6 @@ import java.awt.image.BufferedImage;
 public class TimerIcon implements Icon
 {
     public static final int TIMER_HEIGHT = 17;
-
     private Image timerImages[];
 
     public int getValue()
@@ -31,6 +30,9 @@ public class TimerIcon implements Icon
         value = 63;
     }
 
+    /**
+     * Creates the timer bar for speed mode
+     */
     private void createTimerImages()
     {
         Color red = new Color(255, 12, 3);
@@ -40,7 +42,7 @@ public class TimerIcon implements Icon
         for (int frame = 0; frame < 64; frame++)
         {
             Image image;
-            int width = 380 * frame / 64 + 1;
+            int width = 300 * frame / 64 + 1;
             image = new BufferedImage(width, TIMER_HEIGHT, BufferedImage.TYPE_INT_ARGB);
             Color fill;
             if (frame > 50)
@@ -67,7 +69,14 @@ public class TimerIcon implements Icon
             timerImages[frame] = image;
         }
     }
-
+    
+    /**
+     * Controls the colour of the bar depending on time left
+     * @param start the start colour (green)
+     * @param end the end colour (red)
+     * @param step the step the time bar is currently at
+     * @return the correct colour for the given position
+     */
     private Color merge(Color start, Color end, int step)
     {
         int sr = start.getRed();
