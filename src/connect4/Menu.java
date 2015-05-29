@@ -55,7 +55,8 @@ public class Menu
         items = new HashMap<>(20);
         choices = "Human/Easy/Medium/Hard".split("/");
         JMenuBar menubar = new JMenuBar();      //Create a menu bar
-        JMenu menu = addMenu(menubar, "Game", "Restart Game/Normal/Speed/Endless/--/+Sound/--/Exit".split("/"));
+     //   JMenu menu = addMenu(menubar, "Game", "Restart Game/Normal/Speed/Endless/--/+Sound/--/Exit".split("/"));
+        JMenu menu = addMenu(menubar, "Game", "Restart Game/--/!New Game/Normal/Speed/Endless/--/+Sound/--/Exit".split("/"));
         menu.setMnemonic(KeyEvent.VK_G);
         menu.setIcon(getIcon("iconmenu.png"));
 //        menu = addMenu(menubar, "Player 1", "Human/--/!Computer/Easy/Medium/Hard".split("/"));
