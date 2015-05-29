@@ -33,6 +33,7 @@ public class Menu
     private JMenu score1;
     private JMenu score2;
     private JMenu timeLeft;
+    private Mode currMode;
     
     public boolean playSounds()
     {
@@ -49,11 +50,12 @@ public class Menu
         players = new Player[GUI.NUM_PLAYERS * 2];
         gui = main;
         Font scoreFont = new Font("Times", Font.BOLD, 12);
-
+        currMode = Mode.NORMAL;	
+        
         items = new HashMap<>(20);
         choices = "Human/Easy/Medium/Hard".split("/");
         JMenuBar menubar = new JMenuBar();      //Create a menu bar
-        JMenu menu = addMenu(menubar, "Game", "New Game/Normal/Speed/Endless/--/+Sound/--/Exit".split("/"));
+        JMenu menu = addMenu(menubar, "Game", "Restart Game/Normal/Speed/Endless/--/+Sound/--/Exit".split("/"));
         menu.setMnemonic(KeyEvent.VK_G);
         menu.setIcon(getIcon("iconmenu.png"));
 //        menu = addMenu(menubar, "Player 1", "Human/--/!Computer/Easy/Medium/Hard".split("/"));
@@ -91,6 +93,7 @@ public class Menu
         select("Player 2", "Hard");
         main.setJMenuBar(menubar);                   //Set the menu bar as active
         menuAction("Game/Normal");
+       
         //menuAction("Game/Endless");
         menuAction("Game/Sound");
     }
@@ -146,8 +149,8 @@ public class Menu
                     selected.setSelected(false);
             }
             items.get(menu).setSelected(true);
-
             Mode mode = gui.mode(item);
+            currMode = mode;
             if (mode.tutorial())
             {
                 players[0] = new Tutorial('O');
@@ -253,15 +256,6 @@ public class Menu
                     	} else if (text.equals("Hard")) {
                     	    ImageIcon icon = getIcon("iconhard.png");
                     		item = new JMenuItem(text, icon);
-                    	/*} else if (text.equals("Normal")) {
-                    		ImageIcon icon = getIcon("icontinyboard.png");
-                    		item = new JMenuItem(text, icon);
-                    	} else if (text.equals("Speed")) {
-                    		ImageIcon icon = getIcon("iconspeed.png");
-                    		item = new JMenuItem(text, icon);
-                    	} else if (text.equals("Endless")) {
-                    		ImageIcon icon = getIcon("iconendless.png");
-                    		item = new JMenuItem(text, icon);*/
                     	} else if (text.equals("Normal") || text.equals("Speed") || text.equals("Endless")) {
                     		// Add submenus for Normal, Speed, and Endless gamemodes
                         	item = new JMenu(text);
@@ -358,22 +352,43 @@ public class Menu
                         	item.add(hvc);
                         	item.add(cvc);
                         	
-                    	} else if (text.equals("New Game")) {
+                    	} else if (text.equals("Restart Game")) {
                     		ImageIcon icon = getIcon("iconnewgame.png");
                     		item = new JMenuItem(text, icon);
-                    		item.setMnemonic(KeyEvent.VK_N);
-                        	
+                    		item.setMnemonic(KeyEvent.VK_R);
+                    		String cmd;
+                    		if (currMode == Mode.NORMAL || currMode == Mode.TUTORIAL) {
+                    			 cmd = title + "/" + "Normal";
+                    		} else if (currMode == Mode.SPEED) {
+                    			cmd = title + "/" + "Speed";
+                    		} else {
+                    			cmd = title + "/" + "Endless";
+                    		}
+                    		item.setActionCommand(cmd);
+                    		menu.add(item);
+                    		item.addActionListener(new ActionListener() {
+								@Override
+								public void actionPerformed(ActionEvent e) {
+									if (!checkDiscardGame())
+										return;
+									menuAction(e.getActionCommand());
+								}
+                    		});
                         } else {
                     		item = new JMenuItem(text);   //New item to add
                     		if (text.equals("Tutorial"))
                     			item.setIcon(getIcon("icontutorial.png"));
                     	}
+                    	 System.out.println("cmd for" + text + "is " + item.getActionCommand());
                     }
+                    if (!text.equals("Restart Game")) {
                     String cmd = title + "/" + text;
                     items.put(cmd, item);
                     menu.add(item);                         //Add it to the root
                     item.setActionCommand(cmd);
                     item.addActionListener(menuSelected);   //When selected, call the menuSelected listener
+                    System.out.println("cmd for" + text + "is " + item.getActionCommand());
+                    }
                 }
             }
         }
