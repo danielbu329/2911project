@@ -31,7 +31,7 @@ public class Menu
     private TimerIcon timerIcon;
     private JMenu score1;
     private JMenu score2;
-
+    private JMenu timeLeft;
     
     public boolean playSounds()
     {
@@ -54,21 +54,30 @@ public class Menu
         JMenuBar menubar = new JMenuBar();      //Create a menu bar
         JMenu menu = addMenu(menubar, "Game", "!<New Game>/Normal/Speed/Endless/--/+Sound/--/Exit".split("/"));
         menu.setMnemonic(KeyEvent.VK_G);
-        menu = addMenu(menubar, "Player 1", "Human/--/!Computer/Easy/Medium/Hard".split("/"));
-        menu.setIcon(player1);
-        menu = addMenu(menubar, "Player 2", "Human/--/!Computer/Easy/Medium/Hard".split("/"));
-        menu.setIcon(player2);
+        menu.setIcon(getIcon("icontinyboard.png"));
+//        menu = addMenu(menubar, "Player 1", "Human/--/!Computer/Easy/Medium/Hard".split("/"));
+//        menu.setIcon(player1);
+//        menu = addMenu(menubar, "Player 2", "Human/--/!Computer/Easy/Medium/Hard".split("/"));
+//        menu.setIcon(player2);
         menu = addMenu(menubar, "Help", "Tutorial".split("/"));
+        menu.setMnemonic(KeyEvent.VK_H);
+        menu.setIcon(getIcon("iconhelp.png"));
+        
+        
+        menubar.add(Box.createHorizontalGlue());
+        timeLeft = new JMenu("Time Left:");
+        menubar.add(timeLeft);
         timer = addMenu(menubar, "", empty);
         timerIcon = new TimerIcon();
         timer.setIcon(timerIcon);
+
         score1 = addMenu(menubar, "000000", empty);
         score1.setIcon(player1);
         score1.setFont(scoreFont);
         score2 = addMenu(menubar, "000000", empty);
         score2.setIcon(player2);
         score2.setFont(scoreFont);
-
+        
         select("Player 1", "Human");
         //select("Player 2", "Medium");
         //select("Player 1", "Hard");
@@ -137,6 +146,7 @@ public class Menu
                 players[1] = players[1 + GUI.NUM_PLAYERS];
             }
             timer.setVisible(mode == Mode.SPEED);
+            timeLeft.setVisible(mode == Mode.SPEED);
             score1.setVisible(mode == Mode.ENDLESS);
             score2.setVisible(mode == Mode.ENDLESS);
         }
@@ -233,9 +243,12 @@ public class Menu
                     	}  else if (text.equals("Normal") || text.equals("Speed") || text.equals("Endless")) {
                     		// Add submenus for Normal, Speed, and Endless gamemodes
                         	item = new JMenu(text);
+                        	if (text.equals("Normal"))
+                        		item.setMnemonic(KeyEvent.VK_N);
                         	String cmd = title + "/" + text;
                         	JMenuItem hvh = new JMenuItem("Human vs Human");
                         	hvh.setActionCommand(cmd);
+                        	hvh.setIcon(getIcon("iconhumanvshuman.png"));
                         	hvh.addActionListener(new ActionListener() {
 
 								@Override
@@ -250,6 +263,7 @@ public class Menu
                         	});
                         	JMenuItem hvc = new JMenuItem("Human vs Computer");
                         	hvc.setActionCommand(cmd);
+                        	hvc.setIcon(getIcon("iconhumanvscomputer.png"));
                         	hvc.addActionListener(new ActionListener() {
 
 								@Override
@@ -278,6 +292,7 @@ public class Menu
                         	
                         	JMenuItem cvc = new JMenuItem("Computer vs Computer");
                         	cvc.setActionCommand(cmd);
+                        	cvc.setIcon(getIcon("iconcomputervscomputer.png"));
                         	cvc.addActionListener(new ActionListener() {
 
 								@Override
@@ -323,6 +338,8 @@ public class Menu
                         	
                         } else {
                     		item = new JMenuItem(text);   //New item to add
+                    		if (text.equals("Tutorial"))
+                    			item.setIcon(getIcon("icontutorial.png"));
                     	}
                     }
                     String cmd = title + "/" + text;
@@ -342,11 +359,16 @@ public class Menu
     }
     
     private boolean checkDiscardGame() {
-    	int n = JOptionPane.showConfirmDialog(
-    		    gui,
-    		    "Leave Current Game?",
-    		    "",
-    		    JOptionPane.YES_NO_OPTION);
+    	int n;
+    	if (gui.getPlaying() >= 0 && gui.getPlaying() <= 2) {
+	    	n = JOptionPane.YES_OPTION;
+    	} else {
+    		n = JOptionPane.showConfirmDialog(
+	    		    gui,
+	    		    "Leave Current Game?",
+	    		    "",
+	    		    JOptionPane.YES_NO_OPTION);
+    	}
     	if (n == JOptionPane.YES_OPTION)
     			return true;
     	else
@@ -373,7 +395,7 @@ public class Menu
         for (String choice : choices)
         {
             String menu = player + "/" + choice;
-            items.get(menu).setIcon(null);
+//            items.get(menu).setIcon(null);
         }
         String menu = player + "/" + difficulty;
         int which = 0;
@@ -385,7 +407,7 @@ public class Menu
             which = 1;
             symbol = 'X';
         }
-        items.get(menu).setIcon(icon);
+//        items.get(menu).setIcon(icon);
         //names
         if (difficulty.equals("Human"))
         {
@@ -429,4 +451,5 @@ public class Menu
                 break;
         }
     }
+
 }

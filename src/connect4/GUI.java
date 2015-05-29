@@ -235,6 +235,7 @@ public class GUI extends JFrame implements Runnable
                             message.fade();
                             playing = 3;
                         }
+                        
                         break;
                     case 2:
                         message.set(mode.endless() ? "BONUS " + bonus[1] : "Winner",
@@ -388,5 +389,9 @@ public class GUI extends JFrame implements Runnable
     {
         if (mode == null) return Mode.NORMAL;
         return mode;
+    }
+    
+    public int getPlaying() {
+    	return playing;
     }
 }

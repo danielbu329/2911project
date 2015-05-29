@@ -114,8 +114,8 @@ public class Instructions
 
         "",
 
-        "",
+        "Create a new game by \nclicking on the menu \n \"Game\"",
 
-        "Have fun.",
+        "Have fun!",
     };
 }
