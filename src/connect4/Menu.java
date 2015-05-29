@@ -143,7 +143,7 @@ public class Menu
             }
             if (item.equals("Sound"))
             {
-                JMenuItem soundItem = items.get(menu);
+//                JMenuItem soundItem = items.get(menu);
                 //soundItem.setIcon(getIcon("iconsound.png"));
                 sound = !sound;
 //                soundItem.setSelected(sound);
@@ -160,7 +160,7 @@ public class Menu
                 String modeName = mode.toString();
                 modeName = modeName.charAt(0) + modeName.substring(1).toLowerCase();
                 String menuItem = title + '/' + modeName;
-                JMenuItem selected = items.get(menuItem);
+//                JMenuItem selected = items.get(menuItem);
 //                if (selected != null)
 //                    selected.setSelected(false);
             }
@@ -738,7 +738,7 @@ public class Menu
             String menu = player + "/" + choice;
 //            items.get(menu).setIcon(null);
         }
-        String menu = player + "/" + difficulty;
+//        String menu = player + "/" + difficulty;
         int which = 0;
         PieceIcon icon = player1;
         char symbol = 'O';
