@@ -40,7 +40,13 @@ public class Menu
     }
 
     private boolean sound;
-
+    
+    /**
+     * Constructor for Menu
+     * @param main the gui
+     * @param yellow yellow piece image
+     * @param red red piece image
+     */
     public Menu(GUI main, Image yellow, Image red)
     {
         String empty[] = new String[0];
@@ -111,7 +117,11 @@ public class Menu
         //menuAction("Game/Endless");
         menuAction("Game/Sound");
     }
-
+    
+    /**
+     * Updates the timer
+     * @param value the value to be updated
+     */
     void updateTimer(int value)
     {
         timerIcon.setValue(value);
@@ -155,7 +165,7 @@ public class Menu
             	//restart game
             }
 
-            for (Mode mode : Mode.values())
+            /*for (Mode mode : Mode.values())
             {
                 String modeName = mode.toString();
                 modeName = modeName.charAt(0) + modeName.substring(1).toLowerCase();
@@ -164,7 +174,7 @@ public class Menu
 //                if (selected != null)
 //                    selected.setSelected(false);
             }
-//            items.get(menu).setSelected(true);
+//            items.get(menu).setSelected(true);*/
             Mode mode = gui.mode(item);
             currMode = mode;
             if (mode.tutorial())
@@ -701,7 +711,7 @@ public class Menu
     }
     
     /**
-     * Retreives the icon requested
+     * Retrieves the icon requested
      * @param filename the name of the icon file
      * @return the image
      */
@@ -727,7 +737,11 @@ public class Menu
         return null;
     }
     
-    
+    /**
+     * Selects player for player 1 and 2
+     * @param player player 1 or 2
+     * @param difficulty easy medium or hard
+     */
     public void select(String player, String difficulty)
     {
     	 
@@ -779,12 +793,17 @@ public class Menu
         }
     }
 
-
+    
     public Player[] getPlayers()
     {
         return players;
     }
-
+    
+    /**
+     * Sets score for endless mode
+     * @param score the score scored
+     * @param player the player that scored
+     */
     public void setScore(int score, int player)
     {
         String text = "000000" + Integer.toString(score);
