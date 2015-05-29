@@ -1,13 +1,11 @@
 package connect4;
 
 import java.awt.*;
-import java.awt.image.BufferedImage;
 
 public class Piece
 {
     private Image image;
     private int xpos, ypos;
-    private int w, h;
     private boolean dropping;
     private boolean finished;
     private int yvel;
@@ -15,8 +13,12 @@ public class Piece
     private int column;
     private int row;
     private char symbol;
-    private Board board;
+    private final Board board;
 
+    /**
+     * Gets the column
+     * @return the column the piece is in
+     */
     public int getColumn()
     {
         finished = false;
@@ -24,33 +26,33 @@ public class Piece
         return column;
     }
 
-    public Piece(Image image, int x, int y, Board board, char symbol)
+	/**
+	 * Constructor for Piece
+	 * @param image the piece image
+	 * @param y the y position of the piece
+	 * @param board the current state of the board
+	 * @param symbol red or yellow depending on which player
+	 */
+    public Piece(Image image, int y, Board board, char symbol)
     {
         this.image = image;
-        xpos = x;
+        xpos = 0;
         ypos = y;
-        w = image.getWidth(null);
-        h = image.getHeight(null);
         finished = false;
         this.board = board;
         this.symbol = symbol;
     }
-
-    public void draw(Graphics g, int x, int y)
-    {
-        int w = image.getWidth(null);
-        int h = image.getHeight(null);
-        g.drawImage(image, x, y, null);
-        xpos = x;
-        ypos = y;
-    }
-
+    
+    /**
+     * Draws the image
+     * @param g graphics for the image
+     */
     public void draw(Graphics g)
     {
-        draw(g, xpos, ypos);
+        g.drawImage(image, xpos, ypos, null);
         update();
     }
-
+    
     public boolean isFinished()
     {
         return finished;
@@ -78,16 +80,25 @@ public class Piece
         }
     }
 
-    public void move(int x, int y)
+    public void move(int x)
     {
         if (!dropping)
         {
             xpos = x;
-            ypos = y;
+            ypos = GUI.START_Y;
             finished = false;
         }
     }
-
+    
+    /**
+     * Drops the piece
+     * @param x the X position of the piece
+     * @param y the y position
+     * @param column the column
+     * @param endY the resulting y position
+     * @param row the resulting row
+     * @param symbol red or yellow
+     */
     public void drop(int x, int y, int column, int endY, int row, char symbol)
     {
         if (!dropping)
@@ -109,9 +120,9 @@ public class Piece
         this.image = image;
     }
 
-    public boolean isDropping()
+    public boolean finishedDropping()
     {
-        return dropping;
+        return !dropping;
     }
 
     public char getSymbol()

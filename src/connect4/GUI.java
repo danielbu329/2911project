@@ -12,46 +12,47 @@ import java.util.Random;
 
 public class GUI extends JFrame implements Runnable
 {
-    private Board board;
-    private Player players[];
+	private Board board;
+    private Player[] players;
 
-    public static final int NUM_COLUMNS = 7;
-    public static final int NUM_ROWS = 6;
+    static final int NUM_COLUMNS = 7;
+    static final int NUM_ROWS = 6;
     public static final int NUM_PLAYERS = 2;
 
     private Thread animation;
-    private Image yellow;
-    private Image red;
-    private Image Myellow;
-    private Image Mred;
     private int[] columns;
     private int[] rows;
     private int[] score;
     private int[] bonus;
     private int playing = -1;
     private int curr;
-    Piece pieces[];
+    private Piece[] pieces;
     private GUIInput input;
     private GUIPanel panel;
     private Menu menu;
     private Mode mode;
     private Mode changeMode;
-    int timer = 0;
+    private int timer = 0;
     private Random rnd;
-    private int bonusTime;
     Message message;
-    Sound start;
-    Sound drop1;
-    Sound drop2;
-    Sound hand;
+    private Sound start;
+    private Sound drop2;
+    private Image yellow;
+    private Image red;
+    private Image myellow;
+    private Image mred;
+    private Image gameboard;
+    private Font font;
+
 
     public static final int START_Y = 30;
-    public static final int BONUS_TIME = 50;
-    public static final int MESSAGE_X = 350;
-    public static final int MESSAGE_Y = 200;
+    private static final int BONUS_TIME = 50;
+    static final int MESSAGE_X = 350;
+    static final int MESSAGE_Y = 200;
 
     /**
      * Entry point
+     *
      * @param args - command line arguments
      */
     public static void main(String[] args)
@@ -61,8 +62,8 @@ public class GUI extends JFrame implements Runnable
             @Override
             public void run()
             {
-                GUI frame = new GUI();
-                frame.setVisible(true);
+                GUI gui = new GUI();
+                gui.setVisible(true);
             }
         });
     }
@@ -70,42 +71,58 @@ public class GUI extends JFrame implements Runnable
     /**
      * Construct the GUI
      */
-    public GUI()
+    private GUI() {
+    	loadResources();
+    	init();
+    }
+
+    void loadResources()
+    {
+        yellow = load("yellow.png");
+        red = load("red.png");
+        myellow = load("MenuCoinYellow.png");
+        mred = load("MenuCoinRed.png");
+        font = loadFont();
+        gameboard = load("board.png");
+        start = new Sound("start.wav");
+        drop2 = new Sound("drop2.wav");
+    }
+
+    void init()
     {
         setTitle("Connect 4");
         setSize(701, 750);
         setResizable(false);
         setIconImage(load("programicon.png"));
+        // Get the size of the screen
+        Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
+
+        // Determine the new location of the window
+        int w = getSize().width;
+        int h = getSize().height;
+        int x = (dim.width-w)/2;
+        int y = (dim.height-h)/2;
+
+        // Move the window
+        setLocation(x, y);
         setLocation(150, 50);
-        setDefaultCloseOperation(EXIT_ON_CLOSE);
+        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         rnd = new Random();
         score = new int[NUM_PLAYERS];
         bonus = new int[NUM_PLAYERS];
-        yellow = load("yellow.png");
-        red = load("red.png");
-        Myellow = load("iconMenuCoinYellow.png");
-        Mred = load("iconMenuCoinRed.png");
-        Font font = loadFont("fake-receipt.ttf", 80);
-        board = new Board(NUM_COLUMNS, NUM_ROWS, yellow, red);
+        board = new Board(yellow, red);
         pieces = new Piece[NUM_PLAYERS];
         changeMode = null;
-        pieces[0] = new Piece(yellow, 0, START_Y, board, 'O');
-        pieces[1] = new Piece(red, 0, START_Y, board, 'X');
+        pieces[0] = new Piece(yellow, START_Y, board, 'O');
+        pieces[1] = new Piece(red, START_Y, board, 'X');
         message = new Message(font);
-        Image gameboard = load("board.png");
         columns = new int[]{19, 119, 219, 319, 419, 519, 619};
         rows = new int[]{118, 218, 318, 418, 518, 618};
-        menu = new Menu(this, Myellow, Mred);
-        start = new Sound("start.wav");
-        hand = new Sound("hand.wav");
-        drop1 = new Sound("drop1.wav");
-        drop2 = new Sound("drop2.wav");
- 
+        menu = new Menu(this, myellow, mred);
         mode = changeMode;
         players = menu.getPlayers();
         panel = new GUIPanel(this, red, yellow, pieces[0], gameboard, font, board, getBackground());
         input = new GUIInput(this, panel, pieces[0]);
-        setVisible(true);
         getContentPane().add(panel);
         animation = new Thread(this);
         animation.start();
@@ -123,7 +140,7 @@ public class GUI extends JFrame implements Runnable
             panel.suspend(true);
             try
             {
-                animation.sleep(1);
+                Thread.sleep(1);
             }
             catch (InterruptedException e)
             {
@@ -146,10 +163,9 @@ public class GUI extends JFrame implements Runnable
         board.save();
         panel.setCurrent(pieces[curr]);
         input.setCurrent(pieces[curr], players[curr]);
-        pieces[curr].move(columns[3], START_Y);
-        pieces[1].move(columns[3], START_Y);
+        pieces[curr].move(columns[3]);
+        pieces[1].move(columns[3]);
         message.hide();
-        bonusTime = 0;
         input.reset();
         if (animation != null)
         {
@@ -182,23 +198,29 @@ public class GUI extends JFrame implements Runnable
      * @param size The size of the font
      * @return The font (or default if not possible)
      */
-    Font loadFont(String filename, int size)
+    Font loadFont()
     {
         try
         {
             Font font = Font.createFont(Font.TRUETYPE_FONT,
-                    new FileInputStream("src/connect4/" + filename));
-            return font.deriveFont(Font.PLAIN, size);
+                    getClass().getResourceAsStream("fake-receipt.ttf"));
+            return font.deriveFont(Font.PLAIN, 80);
         }
-        catch (IOException err)
+        catch (Exception err)
+        {
+
+        }
+        try
+        {
+            Font font = Font.createFont(Font.TRUETYPE_FONT,
+                    new FileInputStream("src/connect4/" + "fake-receipt.ttf"));
+            return font.deriveFont(Font.PLAIN, 80);
+        }
+        catch (IOException | FontFormatException err)
         {
             System.out.println("Exception:" + err);
         }
-        catch (FontFormatException err)
-        {
-            System.out.println("Exception:" + err);
-        }
-        return new Font("Calibri", Font.PLAIN, size);
+        return new Font("Calibri", Font.PLAIN, 80);
     }
 
     /**
@@ -207,7 +229,7 @@ public class GUI extends JFrame implements Runnable
     @Override
     public void run()
     {
-        while ( Thread.currentThread() == animation )
+        while (Thread.currentThread() == animation)
         {
             if (changeMode != null)
             {
@@ -221,7 +243,7 @@ public class GUI extends JFrame implements Runnable
                 {
                     case 0:
                         message.set(mode.endless() ? "Game Over" : "Draw",
-                                MESSAGE_X, MESSAGE_Y, Color.BLUE);
+                                Color.BLUE);
                         /*
                         message.set(mode == Mode.ENDLESS ? "Game Over" : "Draw",
                                     MESSAGE_X, MESSAGE_Y, Color.BLUE);
@@ -229,17 +251,16 @@ public class GUI extends JFrame implements Runnable
                         break;
                     case 1:
                         message.set(mode.endless() ? "BONUS " + bonus[0] : "Winner",
-                                MESSAGE_X, MESSAGE_Y, Color.YELLOW);
+                                Color.YELLOW);
                         if (mode.endless())
                         {
                             message.fade();
                             playing = 3;
                         }
-                        
                         break;
                     case 2:
                         message.set(mode.endless() ? "BONUS " + bonus[1] : "Winner",
-                                MESSAGE_X, MESSAGE_Y, Color.RED);
+                                Color.RED);
                         if (mode.endless())
                         {
                             message.fade();
@@ -267,8 +288,7 @@ public class GUI extends JFrame implements Runnable
                         {
                             if (winner == players[0].getSymbol()) playing = 1;
                             if (winner == players[1].getSymbol()) playing = 2;
-                        }
-                        else
+                        } else
                         {
                             playing = -1;
                         }
@@ -292,14 +312,13 @@ public class GUI extends JFrame implements Runnable
                                 score[1] += bonus[1];
                                 menu.setScore(score[0], 0);
                                 menu.setScore(score[1], 1);
-                                bonusTime = BONUS_TIME;
                             }
                         }
                         break;
                 }
-                Thread.sleep ( 20 );
+                Thread.sleep(20);
             }
-            catch ( InterruptedException e )
+            catch (InterruptedException e)
             {
                 //System.out.println ( "Exception: " + e.getMessage() );
             }
@@ -312,15 +331,14 @@ public class GUI extends JFrame implements Runnable
     private int play()
     {
         Player player = players[curr];
-        player = players[curr];
-        char symbol = players[1-curr].getSymbol();
+        char symbol = players[1 - curr].getSymbol();
         Piece current = pieces[curr];
-        if (player instanceof Human || !current.isDropping())
+        if (player instanceof Human || current.finishedDropping())
         {
             board.save();   //The AI will probably modify the state of the board
             //int move = player.getMove(board, players[1-curr].getSymbol(), input);
             int move = player.getMove(board, symbol, input);
-            if (mode == Mode.SPEED && player instanceof Human && !current.isDropping())
+            if (mode == Mode.SPEED && player instanceof Human && current.finishedDropping())
             {
                 timer--;
                 menu.updateTimer(timer);
@@ -345,25 +363,21 @@ public class GUI extends JFrame implements Runnable
         }
         if (current.isFinished())
         {
-            //if (board.drop(current.getColumn(), player.getSymbol()))
-            if (true)
+            current.dropped();
+            board.save();
+            curr = 1 - curr;        //Alternate player
+            current = pieces[curr];
+            //current.setImage(curr == 1 ? red : yellow);
+            current.move(columns[3]);
+            input.setCurrent(current, players[curr]);
+            panel.setCurrent(current);
+            timer = 63;
+            char winner = board.check();
+            if (winner == ' ') return 0;
+            if (winner != 0)
             {
-                current.dropped();
-                board.save();
-                curr = 1 - curr;        //Alternate player
-                current = pieces[curr];
-                //current.setImage(curr == 1 ? red : yellow);
-                current.move(columns[3], START_Y);
-                input.setCurrent(current, players[curr]);
-                panel.setCurrent(current);
-                timer = 63;
-                char winner = board.check();
-                if (winner == ' ') return 0;
-                if (winner != 0)
-                {
-                    if (winner == players[0].getSymbol()) return 1;
-                    if (winner == players[1].getSymbol()) return 2;
-                }
+                if (winner == players[0].getSymbol()) return 1;
+                if (winner == players[1].getSymbol()) return 2;
             }
         }
         return -1;

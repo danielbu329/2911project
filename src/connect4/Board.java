@@ -2,18 +2,17 @@ package connect4;
 
 import java.awt.*;
 
-public class Board
+class Board
 {
-    private Column[] columns;
-    private Column[] savedColumns;
-    Piece[] pieces;
-    private boolean[][] match;
-    private Column blank;
-    private int w;
-    private int h;
+    private final Column[] columns;
+    private final Column[] savedColumns;
+    private final Piece[] pieces;
+    private final boolean[][] match;
+    private final Column blank;
+    private final int w;
+    private final int h;
     private boolean blink;
     private int flash;
-    private int timer;
     private Image yellow;
     private Image red;
     private boolean finish;
@@ -25,8 +24,9 @@ public class Board
 
     /**
      * Create a new game board
+     *
      * @param columns - number of columns wide
-     * @param rows - number of rows high
+     * @param rows    - number of rows high
      */
     public Board(int columns, int rows)
     {
@@ -45,10 +45,15 @@ public class Board
         h = rows;
         flash = 0;
     }
-
-    public Board(int columns, int rows, Image yellow, Image red)
+    
+    /**
+     * Contructor for Board
+     * @param yellow yellow piece image
+     * @param red red piece image
+     */
+    public Board(Image yellow, Image red)
     {
-        this(columns, rows);
+        this(GUI.NUM_COLUMNS, GUI.NUM_ROWS);
         this.yellow = yellow;
         this.red = red;
     }
@@ -56,7 +61,7 @@ public class Board
 
     /**
      * Return the size of the board
-     * @return thw width of the board
+     * @return the width of the board
      */
     public int getColumns()
     {
@@ -65,12 +70,13 @@ public class Board
 
     /**
      * Check if 4 tiles in a row are the same
-     * @param row start position
-     * @param col
+     *
+     * @param row      start position
+     * @param col      column start position
      * @param row_step how much to step by
-     * @param col_step
-     * @param set Set the match array with this value (for flashing win line(s))
-     * @param win The value to return if there is not a match
+     * @param col_step how much to step by
+     * @param set      Set the match array with this value (for flashing win line(s))
+     * @param win      The value to return if there is not a match
      * @return 0 if no line, or the symbol if a line is found
      */
     private char check4(int row, int col, int row_step, int col_step, boolean set, char win)
@@ -98,7 +104,8 @@ public class Board
     }
 
     /**
-     * Check if a line is present on the board
+     * Check if a horizontal line is present on the board
+     *
      * @param row - the row to check
      * @param set Set the match on winning
      * @param win Return if no match
@@ -114,10 +121,11 @@ public class Board
     }
 
     /**
-     * Check if a line is present on the board
+     * Check if a vertical line is present on the board
+     *
      * @param column - the column to check
-     * @param set
-     * @param win
+     * @param set set the match array
+     * @param win the value to return if no win detected
      * @return 0 if no line, or the symbol if a line is found
      */
     private char checkColumn(int column, boolean set, char win)
@@ -130,10 +138,11 @@ public class Board
     }
 
     /**
-     * Check if a line is present on the board
+     * Check if a diagonal line is present on the board
+     *
+     * @param set set the match array
+     * @param win the value to return if no win detected
      * @return 0 if no line, or the symbol if a line is found
-     * @param set
-     * @param win
      */
     private char checkDiagonal(boolean set, char win)
     {
@@ -168,6 +177,7 @@ public class Board
 
     /**
      * Check if a line is present on the board
+     *
      * @return 0 if no line, or the symbol if a line is found
      */
     public char check(boolean set)
@@ -204,6 +214,7 @@ public class Board
      * Check if 5 tiles in a row are the same or blank
      * If any tiles above are set then we can ignore
      * Check -XXX- the positions marked X for 2 the same
+     *
      * @param col start position
      * @return 0 if no columns where we need to drop, or bit mask otherwise
      */
@@ -244,8 +255,9 @@ public class Board
     /**
      * Checks for potential length 5 line since that is impossible to stop
      * once it reaches length 3
-     *                       O       O
+     * O       O
      * --X---- --X---O --XX--O --XXX-O Now X will win next turn, no matter where O goes
+     *
      * @return potential locations to drop as bitmask (or 0 if no restrictions)
      */
     public int checkFive()
@@ -286,7 +298,8 @@ public class Board
 
     /**
      * Drop a piece onto the board
-     * @param move which column to drop into
+     *
+     * @param move   which column to drop into
      * @param symbol which symbol are we dropping
      * @return false if not able to drop
      */
@@ -296,14 +309,24 @@ public class Board
         Column column = columns[move];
         return column.drop(symbol);
     }
-
+    
+    /**
+     * Checks if the drop is a legal move
+     * @param move the column requested
+     * @return true if legal, false otherwise
+     */
     public int canDrop(int move)
     {
         if (move < 0 || move >= getColumns()) return -1;
         Column column = columns[move];
         return column.canDrop();
     }
-
+    
+    /**
+     * Calculates the drop and bounce physics of the coin
+     * @param colPos the column it's falling in
+     * @param rowPos the row position it needs to bouce on
+     */
     public void fall(int colPos[], int rowPos[])
     {
         finish = false;
@@ -327,8 +350,7 @@ public class Board
                             column.clear(y);
                             saved.clear(y);
                             y--;
-                        }
-                        else
+                        } else
                         {
                             char symbol = column.at(y);
                             Image image = null;
@@ -339,7 +361,7 @@ public class Board
                                 column.clear(y);
                                 saved.clear(y);
                                 match[y][col] = true;
-                                Piece piece = new Piece(image, 0, 0, this, 'O');
+                                Piece piece = new Piece(image, 0, this, 'O');
                                 piece.drop(colPos[col], rowPos[y], col, rowPos[row], row, symbol);
                                 pieces[i++] = piece;
                             }
@@ -367,7 +389,7 @@ public class Board
         System.out.println(line);
         for (int row = 0; row < columns[0].getRows(); row++)
         {
-            System.out.print((char)('A' + row));
+            System.out.print((char) ('A' + row));
             for (int column = 0; column < getColumns(); column++)
             {
                 System.out.print("|");
@@ -378,7 +400,10 @@ public class Board
         }
         System.out.println();
     }
-
+    
+    /**
+     * Resets the board
+     */
     public void reset()
     {
         for (int column = 0; column < w; column++)
@@ -429,15 +454,17 @@ public class Board
                 if (piece.isFinished())
                 {
                     pieces[i] = null;
-                }
-                else
+                } else
                 {
                     finish = false;
                 }
             }
         }
     }
-
+    
+    /**
+     * Clears a line of coins
+     */
     public void clear()
     {
         for (int row = 0; row < h; row++)
@@ -447,19 +474,14 @@ public class Board
                 match[row][col] = false;
             }
         }
-        timer = 0;
     }
-
-    public boolean ready()
-    {
-        if (timer > 0)
-        {
-            timer--;
-        }
-        //return timer == 0;
-        return true;
-    }
-
+    
+    /**
+     * Calculates points for endless mode
+     * The points awarded are 2^n + 2n, where n is the number of coins in a row
+     * @param symbol red or yellow
+     * @return The amount of points received from forming one (or more) lines
+     */
     public int bonus(char symbol)
     {
         int count = 0;
@@ -481,7 +503,7 @@ public class Board
 
         return bonus;
     }
-
+    
     public void set(int row, int column, char symbol)
     {
         columns[column].set(row, symbol);

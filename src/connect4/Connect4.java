@@ -28,13 +28,21 @@ public class Connect4
         players[0] = new Computer(1, 'O');
         players[1] = new Computer(1, 'X');
     }
-
+    
+    /**
+     * Gets the name of the player
+     * @param num the player number
+     * @return the name of the player
+     */
     private String getName(int num)
     {
         System.out.print("Enter the name of player " + num + ": ");
         return input.next();
     }
-
+    
+    /**
+     * Starts the game (in the console)
+     */
     private void start()
     {
         input = new Scanner(System.in);
@@ -75,7 +83,10 @@ public class Connect4
             if (input.next().equalsIgnoreCase("n")) break;
         }
     }
-
+    
+    /**
+     * Tests the board
+     */
     private void testBoard()
     {
         while (true)
@@ -97,7 +108,11 @@ public class Connect4
             board.draw();
         }
     }
-
+    
+    /**
+     * Requests and sets difficulty level
+     * @return the difficulty level
+     */
     private int difficult()
     {
         System.out.println("Enter difficulty level:");
@@ -119,10 +134,13 @@ public class Connect4
      */
     public static void main(String args[])
     {
-        Connect4 game = new Connect4();
-        game.start();
+        //Connect4 game = new Connect4();
+        //game.start();
     }
-
+    
+    /**
+     * Runs AI vs. AI games and records the data
+     */
     private void testAI()
     {
         String desc[] = new String[]{"Random", "Current/Next", "Monte Carlo"};

@@ -21,7 +21,18 @@ public class GUIPanel extends JPanel
     private volatile boolean suspended;
     private boolean tutorial;
     private Instructions instructions;
-
+    
+    /**
+     * Contructor for GUIPanel
+     * @param main the GUI
+     * @param red red coin image
+     * @param yellow yellow coin image
+     * @param current the current piece (red or yellow)
+     * @param gameboard the gameboard image
+     * @param font the font used in the GUI
+     * @param board The board
+     * @param background The background
+     */
     GUIPanel(GUI main, Image red, Image yellow, Piece current, Image gameboard, Font font, Board board, Color background)
     {
         this.red = red;

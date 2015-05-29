@@ -6,6 +6,7 @@ import javax.imageio.ImageIO;
 import javax.swing.*;
 
 import java.lang.reflect.Method;
+import java.net.URL;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -685,6 +686,10 @@ public class Menu
         return menu;
     }
     
+    /**
+     * Dialogue to confirm with the user if they want to discard the current game
+     * @return true or false
+     */
     private boolean checkDiscardGame() {
     	int n;
     	if (gui.getPlaying() >= 0 && gui.getPlaying() <= 2) {
@@ -702,19 +707,34 @@ public class Menu
     		return false;
     }
     
-    private ImageIcon getIcon(String fileName) {
-    	 try
-         {
-    		 ImageIcon icon = new ImageIcon("src/connect4/"+fileName);
-    		 return icon;
-         }
-         catch (Exception err)
-         {
-             System.out.println("Exception:" + err);
-         }
-    	 return null;
-    }
+    /**
+     * Retreives the icon requested
+     * @param filename the name of the icon file
+     * @return the image
+     */
+    private ImageIcon getIcon(String filename)
+    {
+        try
+        {
+            URL imgURL = getClass().getResource(filename);
+            return new ImageIcon(imgURL);
+        }
+        catch (Exception err)
+        {
+        }
 
+        try
+        {
+            return new ImageIcon("src/connect4/" + filename);
+        }
+        catch (Exception err)
+        {
+            System.out.println("Exception:" + err);
+        }
+        return null;
+    }
+    
+    
     public void select(String player, String difficulty)
     {
     	 

@@ -10,9 +10,22 @@ public class Sound
 {
     Clip sound;
 
+    /**
+     * Constructor for Sound
+     * @param filename the name of the audio file
+     */
     public Sound(String filename)
     {
-        try
+        retrieveSound(filename);
+    }
+    
+    /**
+     * Retreives the audio file
+     * @param filename name of the audio file
+     */
+    public void retrieveSound(String filename)
+    {
+    	try
         {
             sound = AudioSystem.getClip();
             AudioInputStream inputStream = AudioSystem.getAudioInputStream(
@@ -39,6 +52,9 @@ public class Sound
         }
     }
 
+	/**
+	 * Plays the sound
+	 */
     public void play()
     {
         sound.setFramePosition(0);

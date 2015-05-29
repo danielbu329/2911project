@@ -53,7 +53,11 @@ public class Column
     {
         return cells[row];
     }
-
+    
+    /**
+     * Copies the contents of a column
+     * @param column the colomn requested
+     */
     public void copy(Column column)
     {
         for (int i = 0; i < cells.length; i++)
@@ -73,7 +77,8 @@ public class Column
      * @param row
      */
     void set(int row) { cells[row] = '+';}
-
+    
+    
     public int canDrop()
     {
         int index = -1;
@@ -91,7 +96,11 @@ public class Column
         }
         return index;
     }
-
+    
+    /**
+     * Clears the respective position in the given row height
+     * @param row the row position
+     */
     public void clear(int row)
     {
         cells[row] = ' ';
