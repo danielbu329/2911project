@@ -80,8 +80,8 @@ public class GUI extends JFrame implements Runnable
     {
         yellow = load("yellow.png");
         red = load("red.png");
-        myellow = load("MenuCoinYellow.png");
-        mred = load("MenuCoinRed.png");
+        myellow = load("iconMenuCoinYellow.png");
+        mred = load("iconMenuCoinRed.png");
         font = loadFont();
         gameboard = load("board.png");
         start = new Sound("start.wav");
@@ -182,7 +182,7 @@ public class GUI extends JFrame implements Runnable
     {
         try
         {
-            BufferedImage image = ImageIO.read(new File("src/connect4/" + filename));
+            BufferedImage image = ImageIO.read(new File("src/connect4/images/" + filename));
             return image;
         }
         catch (IOException err)

@@ -697,7 +697,7 @@ public class Menu
 
         try
         {
-            return new ImageIcon("src/connect4/" + filename);
+            return new ImageIcon("src/connect4/images/" + filename);
         }
         catch (Exception err)
         {
