@@ -34,6 +34,8 @@ public class Menu
     private JMenu score2;
     private JMenu timeLeft;
     private Mode currMode;
+    private String compDifficulty1;
+    private String compDifficulty2;
     
     public boolean playSounds()
     {
@@ -51,6 +53,8 @@ public class Menu
         gui = main;
         Font scoreFont = new Font("Times", Font.BOLD, 12);
         currMode = Mode.NORMAL;	
+        compDifficulty1 = "Easy";
+        compDifficulty2 = "Hard";
         
         items = new HashMap<>(20);
         choices = "Human/Easy/Medium/Hard".split("/");
@@ -64,10 +68,13 @@ public class Menu
 //        menu = addMenu(menubar, "Player 2", "Human/--/!Computer/Easy/Medium/Hard".split("/"));
 //        menu.setIcon(player2);
         
-        menu = addMenu(menubar, "Mode", "Normal/Speed/Endless".split("/"));
+        menu = addMenu(menubar, "Mode", "-Normal/-Speed/-Endless".split("/"));
         menu.setIcon(getIcon("icontinyboard.png"));
-        menu = addMenu(menubar, "Players", "Human vs Human/Human vs Computer/Computer vs Computer".split("/"));
+        menu = addMenu(menubar, "Players", "-Human vs Human/-Human vs Computer/-Computer vs Computer".split("/"));
         menu.setIcon(getIcon("iconhumanvscomputer.png"));        
+        
+        menu = addMenu(menubar, "Difficulty", "!Singleplayer/-SinglePlayerDifficulties/--/!AI vs AI/Yellow/Red".split("/"));
+       	menu.setIcon(getIcon("icondifficulty.png"));
         
         menu = addMenu(menubar, "Help", "Tutorial".split("/"));
         menu.setMnemonic(KeyEvent.VK_H);
@@ -92,6 +99,7 @@ public class Menu
         //select("Player 2", "Medium");
         //select("Player 1", "Hard");
         select("Player 2", "Hard");
+       
         main.setJMenuBar(menubar);                   //Set the menu bar as active
         menuAction("Game/Normal");
        
@@ -112,11 +120,13 @@ public class Menu
      */
     void menuAction(String menu)         //Called each time menu item is selected
     {
+    	System.out.println(menu);
         int slash = menu.indexOf('/');
         String title = menu.substring(0, slash);
         String item = menu.substring(slash+1);
-        if (title.startsWith("Players"))
+        if (title.startsWith("Player"))
         {
+        	System.out.println("wtf");
             select(title, item);
         }
 
@@ -131,7 +141,7 @@ public class Menu
                 JMenuItem soundItem = items.get(menu);
                 //soundItem.setIcon(getIcon("iconsound.png"));
                 sound = !sound;
-                soundItem.setSelected(sound);
+//                soundItem.setSelected(sound);
                 return;
             }
             
@@ -146,10 +156,10 @@ public class Menu
                 modeName = modeName.charAt(0) + modeName.substring(1).toLowerCase();
                 String menuItem = title + '/' + modeName;
                 JMenuItem selected = items.get(menuItem);
-                if (selected != null)
-                    selected.setSelected(false);
+//                if (selected != null)
+//                    selected.setSelected(false);
             }
-            items.get(menu).setSelected(true);
+//            items.get(menu).setSelected(true);
             Mode mode = gui.mode(item);
             currMode = mode;
             if (mode.tutorial())
@@ -167,6 +177,15 @@ public class Menu
             score1.setVisible(mode == Mode.ENDLESS);
             score2.setVisible(mode == Mode.ENDLESS);
         }
+        
+//	    if (title.equals("Difficulty")) {
+//	    	int p = (int)item.charAt(0);
+//	    	if (p == 1) {
+//	    		select("Player 1", )
+//	    	} else {
+//	    		
+//	    	}
+//	    }
     }
 
     /**
@@ -241,6 +260,162 @@ public class Menu
                         }
   
                     } 
+                    else if (ch == '-') 
+                    {
+                    	text = text.substring(1);
+                        if (text.equals("Normal")) {
+                        	ImageIcon icon = getIcon("iconnormal.png");
+                        	item = new JMenuItem(text, icon);
+                        	
+                        	item.setActionCommand("Game/Normal");
+//                        	item.setMnemonic(KeyEvent.VK_N);
+                        	item.addActionListener(new ActionListener() {
+								@Override
+								public void actionPerformed(ActionEvent e) {
+									if (!checkDiscardGame())
+										return;
+									menuAction(e.getActionCommand());
+								}
+                        	});
+                        	items.put("Game/Normal", item);
+                        } else if (text.equals("Speed")) {
+                        	ImageIcon icon = getIcon("iconspeed.png");
+                        	item = new JMenuItem(text, icon);
+                        	
+                        	item.setActionCommand("Game/Speed");
+//                        	item.setMnemonic(KeyEvent.VK_N);
+                        	item.addActionListener(new ActionListener() {
+								@Override
+								public void actionPerformed(ActionEvent e) {
+									if (!checkDiscardGame())
+										return;
+									menuAction(e.getActionCommand());
+								}
+                        	});
+                        	items.put("Game/Speed", item);
+                        } else if (text.equals("Endless")) {
+                        	ImageIcon icon = getIcon("iconendless.png");
+                        	item = new JMenuItem(text, icon);
+                        	
+                        	item.setActionCommand("Game/Endless");
+//                        	item.setMnemonic(KeyEvent.VK_N);
+                        	item.addActionListener(new ActionListener() {
+								@Override
+								public void actionPerformed(ActionEvent e) {
+									if (!checkDiscardGame())
+										return;
+									menuAction(e.getActionCommand());
+								}
+                        	});
+                        	items.put("Game/Endless", item);
+                        }  else if (text.equals("Human vs Human")) {
+                        	ImageIcon icon = getIcon("iconhumanvshuman.png");
+                    		item = new JMenuItem(text, icon);
+                    		String cmd;
+                    		title = "Game";
+                    		if (currMode == Mode.NORMAL || currMode == Mode.TUTORIAL) {
+                    			 cmd = title + "/" + "Normal";
+                    		} else if (currMode == Mode.SPEED) {
+                    			cmd = title + "/" + "Speed";
+                    		} else {
+                    			cmd = title + "/" + "Endless";
+                    		}
+                    		item.setActionCommand(cmd);
+                    		menu.add(item);
+                    		item.addActionListener(new ActionListener() {
+								@Override
+								public void actionPerformed(ActionEvent e) {
+									if (!checkDiscardGame())
+										return;
+									
+									menuAction(e.getActionCommand());
+									select("Player 1", "Human");
+									select("Player 2", "Human");
+								}
+                    		});
+//                    		items.put(cmd, item);
+                    	} else if (text.equals("Human vs Computer")) {
+                    		ImageIcon icon = getIcon("iconhumanvscomputer.png");
+                    		item = new JMenuItem(text, icon);
+                    		String cmd;
+                    		title = "Game";
+                    		if (currMode == Mode.NORMAL || currMode == Mode.TUTORIAL) {
+                    			 cmd = title + "/" + "Normal";
+                    		} else if (currMode == Mode.SPEED) {
+                    			cmd = title + "/" + "Speed";
+                    		} else {
+                    			cmd = title + "/" + "Endless";
+                    		}
+                    		item.setActionCommand(cmd);
+                    		menu.add(item);
+                    		item.addActionListener(new ActionListener() {
+								@Override
+								public void actionPerformed(ActionEvent e) {
+									if (!checkDiscardGame())
+										return;
+									select("Player 1", "Human");
+									select("Player 2", compDifficulty2);
+									menuAction(e.getActionCommand());
+								}
+                    		});
+                    	} else if (text.equals("Computer vs Computer")) {
+                    		ImageIcon icon = getIcon("iconcomputervscomputer.png");
+                    		item = new JMenuItem(text, icon);
+                    		String cmd;
+                    		title = "Game";
+                    		if (currMode == Mode.NORMAL || currMode == Mode.TUTORIAL) {
+                    			 cmd = title + "/" + "Normal";
+                    		} else if (currMode == Mode.SPEED) {
+                    			cmd = title + "/" + "Speed";
+                    		} else {
+                    			cmd = title + "/" + "Endless";
+                    		}
+                    		item.setActionCommand(cmd);
+                    		menu.add(item);
+                    		item.addActionListener(new ActionListener() {
+								@Override
+								public void actionPerformed(ActionEvent e) {
+									if (!checkDiscardGame())
+										return;
+									select("Player 1", compDifficulty1);
+									select("Player 2", compDifficulty2);
+									menuAction(e.getActionCommand());
+								}
+                    		});
+                    	} else if (text.equals("SinglePlayerDifficulties")) {
+                    		String cmd;
+                    		
+                    		ButtonGroup bg = new ButtonGroup();
+                    	    ImageIcon icon = getIcon("iconeasy.png");
+                    		item = new JRadioButtonMenuItem("Easy", icon);
+                    		bg.add(item);
+                    		System.out.println(title);
+                    		cmd = "Player 2" + "/" + "Easy";
+                    		item.setActionCommand(cmd);
+                    		item.addActionListener(menuSelected);
+                    		menu.add(item);
+                    		
+                    		icon = getIcon("iconmedium.png");
+                    		item = new JRadioButtonMenuItem("Medium", icon);
+                    		bg.add(item);
+                    		cmd = "Player 2"  + "/" + "2Medium";
+                    		item.setActionCommand(cmd);
+                    		item.addActionListener(menuSelected);
+                    		menu.add(item);
+                    		
+                    		icon = getIcon("iconhard.png");
+                    		item = new JRadioButtonMenuItem("Hard", icon);
+                    		bg.add(item);
+                    		cmd = "Player 2"  + "/" + "2Hard";
+                    		item.setSelected(true);
+                    		item.setActionCommand(cmd);
+                    		item.addActionListener(menuSelected);
+                    		
+                    	} else {
+                        	item = new JMenuItem(text);   //New item to add
+                        }
+                        menu.add(item); //add it to the menu
+                    }
                     else
                     {
                     	if (text.equals("Exit")) {
@@ -248,15 +423,6 @@ public class Menu
                     	    ImageIcon icon = getIcon("iconexit.png");
                     		item = new JMenuItem(text, icon);
                     		item.setMnemonic(KeyEvent.VK_Q);
-                    	} else if (text.equals("Easy")) {
-                    	    ImageIcon icon = getIcon("iconeasy.png");
-                    		item = new JMenuItem(text, icon);
-                    	} else if (text.equals("Medium")) {
-                    	    ImageIcon icon = getIcon("iconmedium.png");
-                    		item = new JMenuItem(text, icon);
-                    	} else if (text.equals("Hard")) {
-                    	    ImageIcon icon = getIcon("iconhard.png");
-                    		item = new JMenuItem(text, icon);
                     	} else if (text.equals("Normal") || text.equals("Speed") || text.equals("Endless")) {
                     		// Add submenus for Normal, Speed, and Endless gamemodes
                         	item = new JMenu(text);
@@ -345,6 +511,8 @@ public class Menu
 										select("Player 2", computerB);
 									else 
 										select("Player 2", "Hard");
+									
+									
 								menuAction(e.getActionCommand()); 
 
 								}
@@ -380,15 +548,15 @@ public class Menu
                     		if (text.equals("Tutorial"))
                     			item.setIcon(getIcon("icontutorial.png"));
                     	}
-                    	 System.out.println("cmd for" + text + "is " + item.getActionCommand());
-                    }
-                    if (!text.equals("Restart Game")) {
-                    String cmd = title + "/" + text;
-                    items.put(cmd, item);
-                    menu.add(item);                         //Add it to the root
-                    item.setActionCommand(cmd);
-                    item.addActionListener(menuSelected);   //When selected, call the menuSelected listener
-                    System.out.println("cmd for" + text + "is " + item.getActionCommand());
+                    } 
+                    
+                    if (!text.equals("Restart Game") && ch != '-') {
+	                    String cmd = title + "/" + text;
+	                    items.put(cmd, item);
+	                    menu.add(item);                         //Add it to the root
+	                    item.setActionCommand(cmd);
+	                    item.addActionListener(menuSelected);   //When selected, call the menuSelected listener
+//	                    System.out.println("adding " + text);
                     }
                 }
             }
@@ -433,6 +601,7 @@ public class Menu
 
     public void select(String player, String difficulty)
     {
+    	 
         if (gui.getMode().tutorial()) return;
 
         for (String choice : choices)
@@ -449,7 +618,14 @@ public class Menu
             icon = player2;
             which = 1;
             symbol = 'X';
+           
         }
+        if (player.equals("Player 1") && !difficulty.equals("Human")) {
+        	compDifficulty1 = difficulty;
+        } else if (player.equals("Player 2") && !difficulty.equals("Human")) {
+        	compDifficulty2 = difficulty;
+        }
+        	
 //        items.get(menu).setIcon(icon);
         //names
         if (difficulty.equals("Human"))
