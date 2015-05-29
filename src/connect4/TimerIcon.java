@@ -42,7 +42,7 @@ public class TimerIcon implements Icon
         for (int frame = 0; frame < 64; frame++)
         {
             Image image;
-            int width = 300 * frame / 64 + 1;
+            int width = 250 * frame / 64 + 1;
             image = new BufferedImage(width, TIMER_HEIGHT, BufferedImage.TYPE_INT_ARGB);
             Color fill;
             if (frame > 50)
