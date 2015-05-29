@@ -640,7 +640,7 @@ public class Menu
                         	item.add(cvc);
                         	
                     	} else if (text.equals("Restart Game")) {
-                    		ImageIcon icon = getIcon("iconnewgame.png");
+                    		ImageIcon icon = getIcon("iconrestart.png");
                     		item = new JMenuItem(text, icon);
                     		item.setMnemonic(KeyEvent.VK_R);
                     		String cmd;
