@@ -48,7 +48,7 @@ public class Instructions
     {
         try
         {
-            Integer.parseInt(string);
+            Double.parseDouble(string);
             return true;
         }
         catch (NumberFormatException e)
@@ -92,7 +92,23 @@ public class Instructions
         "Player 1 completed a horizontal\n" +
         "line.",
 
-        "",
+        "5",
+
+        "C5-F5",
+
+        "Player 2 completed a vertical line.",
+
+        "45566774677",
+
+        "F4-C7",
+
+        "Player 1 completed a diagonal line.",
+
+        "F4-F7",
+
+        "Player 2 got a bonus line since it\n" +
+        "completed a line when the pieces\n" +
+        "fell.",
 
         "",
 
@@ -102,20 +118,7 @@ public class Instructions
 
         "",
 
-        "",
-
-        "",
-
-        "",
-
-        "",
-
-        "",
-
-        "",
-
-        "Create a new game by \nclicking on the menu \n \"Game\"",
-
-        "Have fun!",
+        "Have fun.",
     };
 }
+

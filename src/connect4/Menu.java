@@ -5,6 +5,7 @@ import sun.security.provider.PolicySpiFile;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 
+import java.lang.reflect.Method;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -52,13 +53,19 @@ public class Menu
         items = new HashMap<>(20);
         choices = "Human/Easy/Medium/Hard".split("/");
         JMenuBar menubar = new JMenuBar();      //Create a menu bar
-        JMenu menu = addMenu(menubar, "Game", "!<New Game>/Normal/Speed/Endless/--/+Sound/--/Exit".split("/"));
+        JMenu menu = addMenu(menubar, "Game", "New Game/Normal/Speed/Endless/--/+Sound/--/Exit".split("/"));
         menu.setMnemonic(KeyEvent.VK_G);
-        menu.setIcon(getIcon("icontinyboard.png"));
+        menu.setIcon(getIcon("iconmenu.png"));
 //        menu = addMenu(menubar, "Player 1", "Human/--/!Computer/Easy/Medium/Hard".split("/"));
 //        menu.setIcon(player1);
 //        menu = addMenu(menubar, "Player 2", "Human/--/!Computer/Easy/Medium/Hard".split("/"));
 //        menu.setIcon(player2);
+        
+        menu = addMenu(menubar, "Mode", "Normal/Speed/Endless".split("/"));
+        menu.setIcon(getIcon("icontinyboard.png"));
+        menu = addMenu(menubar, "Players", "Human vs Human/Human vs Computer/Computer vs Computer".split("/"));
+        menu.setIcon(getIcon("iconhumanvscomputer.png"));        
+        
         menu = addMenu(menubar, "Help", "Tutorial".split("/"));
         menu.setMnemonic(KeyEvent.VK_H);
         menu.setIcon(getIcon("iconhelp.png"));
@@ -104,7 +111,7 @@ public class Menu
         int slash = menu.indexOf('/');
         String title = menu.substring(0, slash);
         String item = menu.substring(slash+1);
-        if (title.startsWith("Player"))
+        if (title.startsWith("Players"))
         {
             select(title, item);
         }
@@ -118,9 +125,15 @@ public class Menu
             if (item.equals("Sound"))
             {
                 JMenuItem soundItem = items.get(menu);
+                //soundItem.setIcon(getIcon("iconsound.png"));
                 sound = !sound;
                 soundItem.setSelected(sound);
                 return;
+            }
+            
+            if (item.equals("New Game"))
+            {
+            	//restart game
             }
 
             for (Mode mode : Mode.values())
@@ -240,7 +253,16 @@ public class Menu
                     	} else if (text.equals("Hard")) {
                     	    ImageIcon icon = getIcon("iconhard.png");
                     		item = new JMenuItem(text, icon);
-                    	}  else if (text.equals("Normal") || text.equals("Speed") || text.equals("Endless")) {
+                    	/*} else if (text.equals("Normal")) {
+                    		ImageIcon icon = getIcon("icontinyboard.png");
+                    		item = new JMenuItem(text, icon);
+                    	} else if (text.equals("Speed")) {
+                    		ImageIcon icon = getIcon("iconspeed.png");
+                    		item = new JMenuItem(text, icon);
+                    	} else if (text.equals("Endless")) {
+                    		ImageIcon icon = getIcon("iconendless.png");
+                    		item = new JMenuItem(text, icon);*/
+                    	} else if (text.equals("Normal") || text.equals("Speed") || text.equals("Endless")) {
                     		// Add submenus for Normal, Speed, and Endless gamemodes
                         	item = new JMenu(text);
                         	if (text.equals("Normal"))
@@ -335,6 +357,11 @@ public class Menu
                         	item.add(hvh);
                         	item.add(hvc);
                         	item.add(cvc);
+                        	
+                    	} else if (text.equals("New Game")) {
+                    		ImageIcon icon = getIcon("iconnewgame.png");
+                    		item = new JMenuItem(text, icon);
+                    		item.setMnemonic(KeyEvent.VK_N);
                         	
                         } else {
                     		item = new JMenuItem(text);   //New item to add

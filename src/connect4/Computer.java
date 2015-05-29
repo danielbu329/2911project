@@ -5,13 +5,14 @@ import java.util.Scanner;
 
 public class Computer implements Player
 {
-    private int smart;
-    private char symbol;
+    private final int smart;
+    private final char symbol;
     private Random rnd;
 
     /**
      * Create a computer player
-     * @param smart - the level of AI to use
+     *
+     * @param smart  - the level of AI to use
      * @param symbol - the symbol to represent the player
      */
     public Computer(int smart, char symbol)
@@ -30,9 +31,7 @@ public class Computer implements Player
     @Override
     public int getMove(Board board, char other, Scanner input)
     {
-        board.draw();
         if (smart < 0) return valid(-1, board);
-        rnd = new Random(0);
 
         int columns = board.getColumns();
         int consider = (1 << columns) - 1;      //The rows that should be considered
@@ -75,7 +74,6 @@ public class Computer implements Player
 
         if (consider == 0)
         {
-            System.out.println("Two possible winning moves, stopping 1");
             for (int column = 0; column < columns; column++)
             {
                 if (!board.drop(column, other)) continue;
@@ -88,8 +86,6 @@ public class Computer implements Player
             }
         }
 
-        //if (consider == 0) return valid(-1, board);         //Just return the first valid move
-
         if (smart == 0)     //At smart == 0 wins approx 90% of the time against random player
         {
             return valid(consider, board);                  //Make any valid move
@@ -97,7 +93,6 @@ public class Computer implements Player
 
         int wins[] = new int[columns];
         int losses[] = new int[columns];
-        int curr = 0;
         int maxDepth = 6;
         int maxTrials = 1000;
         if (smart == 2)
@@ -125,8 +120,7 @@ public class Computer implements Player
                 {
                     column = valid(consider, board);
                     initial = column;
-                }
-                else
+                } else
                 {
                     column = valid(-1, board);
                 }
@@ -161,13 +155,14 @@ public class Computer implements Player
     @Override
     public int getMove(Board board, char symbol, GUIInput input)
     {
-        return getMove(board, symbol, (Scanner)null);
+        return getMove(board, symbol, (Scanner) null);
     }
 
     /**
      * Return any valid move
+     *
      * @param consider - the columns we should consider
-     * @param board - the existing board
+     * @param board    - the existing board
      * @return the column where drop is to be done
      */
     private int valid(int consider, Board board)
