@@ -32,10 +32,13 @@ public class Menu
     private TimerIcon timerIcon;
     private JMenu score1;
     private JMenu score2;
+    private JMenu hvcDiff;
+    private JMenu cvcDiff;
     private JMenu timeLeft;
     private Mode currMode;
     private String compDifficulty1;
     private String compDifficulty2;
+    
     
     public boolean playSounds()
     {
@@ -73,8 +76,15 @@ public class Menu
         menu = addMenu(menubar, "Players", "-Human vs Human/-Human vs Computer/-Computer vs Computer".split("/"));
         menu.setIcon(getIcon("iconhumanvscomputer.png"));        
         
-        menu = addMenu(menubar, "Difficulty", "!Singleplayer/-SinglePlayerDifficulties/--/!AI vs AI/Yellow/Red".split("/"));
+        menu = addMenu(menubar, "Difficulty", "!Singleplayer/-SinglePlayerDifficulties".split("/"));
+        hvcDiff = menu;
+        hvcDiff.setVisible(true);
        	menu.setIcon(getIcon("icondifficulty.png"));
+       	
+       	menu = addMenu(menubar, "Ai Difficulty", "!AI vs AI/-Yellow/-Red".split("/"));
+       	menu.setIcon(getIcon("icondifficulty.png"));
+       	cvcDiff = menu;
+       	cvcDiff.setVisible(false);
         
         menu = addMenu(menubar, "Help", "Tutorial".split("/"));
         menu.setMnemonic(KeyEvent.VK_H);
@@ -178,14 +188,56 @@ public class Menu
             score2.setVisible(mode == Mode.ENDLESS);
         }
         
-//	    if (title.equals("Difficulty")) {
-//	    	int p = (int)item.charAt(0);
-//	    	if (p == 1) {
-//	    		select("Player 1", )
-//	    	} else {
-//	    		
-//	    	}
-//	    }
+	    if (title.equals("P1")) {
+	    	select("Player 1", item);
+	    } else if (title.equals("P2")) {
+	    	select("Player 2", item);
+	    }
+	    
+	    if (compDifficulty2.equals("Easy")) {
+			JMenu myMenu= (JMenu) cvcDiff.getMenuComponent(2);
+			JRadioButtonMenuItem rad= (JRadioButtonMenuItem) myMenu.getMenuComponent(0);
+			System.out.println(rad.getText());
+			rad.setSelected(true);
+		} 
+		if (compDifficulty2.equals("Medium")) {
+			JMenu myMenu= (JMenu) cvcDiff.getMenuComponent(2);
+			JRadioButtonMenuItem rad= (JRadioButtonMenuItem) myMenu.getMenuComponent(1);
+			rad.setSelected(true);
+		}
+		if (compDifficulty2.equals("Hard")) {
+			JMenu myMenu= (JMenu) cvcDiff.getMenuComponent(2);
+			JRadioButtonMenuItem rad= (JRadioButtonMenuItem) myMenu.getMenuComponent(2);
+			rad.setSelected(true);
+		}
+		if (compDifficulty1.equals("Easy")) {
+			JMenu myMenu= (JMenu) cvcDiff.getMenuComponent(1);
+			JRadioButtonMenuItem rad= (JRadioButtonMenuItem) myMenu.getMenuComponent(0);
+			System.out.println(rad.getText());
+			rad.setSelected(true);
+		} 
+		if (compDifficulty1.equals("Medium")) {
+			JMenu myMenu= (JMenu) cvcDiff.getMenuComponent(1);
+			JRadioButtonMenuItem rad= (JRadioButtonMenuItem) myMenu.getMenuComponent(1);
+			rad.setSelected(true);
+		}
+		if (compDifficulty1.equals("Hard")) {
+			JMenu myMenu= (JMenu) cvcDiff.getMenuComponent(1);
+			JRadioButtonMenuItem rad= (JRadioButtonMenuItem) myMenu.getMenuComponent(2);
+			rad.setSelected(true);
+		}
+		if (compDifficulty2.equals("Easy")) {
+			JRadioButtonMenuItem rad= (JRadioButtonMenuItem) hvcDiff.getMenuComponent(1);
+			rad.setSelected(true);
+		} 
+		if (compDifficulty2.equals("Medium")) {
+			JRadioButtonMenuItem rad= (JRadioButtonMenuItem) hvcDiff.getMenuComponent(2);
+			rad.setSelected(true);
+		}
+		if (compDifficulty2.equals("Hard")) {
+			JRadioButtonMenuItem rad= (JRadioButtonMenuItem) hvcDiff.getMenuComponent(3);
+			rad.setSelected(true);
+		}
     }
 
     /**
@@ -217,7 +269,12 @@ public class Menu
                 char ch = text.charAt(0);
                 if (ch == '!')
                 {
-                	JMenuItem item = new JMenuItem(text.substring(1));
+                	text = text.substring(1);
+                	JMenuItem item = new JMenuItem(text);
+                	if (text.equals("AI vs AI")) {
+                		item.setIcon(getIcon("iconcomputervscomputer.png"));
+                	}
+                		
                     menu.add(item);                         //Add it to the root
                     item.setEnabled(false);
                 }
@@ -328,9 +385,12 @@ public class Menu
 									if (!checkDiscardGame())
 										return;
 									
-									menuAction(e.getActionCommand());
 									select("Player 1", "Human");
 									select("Player 2", "Human");
+									cvcDiff.setVisible(false);
+									hvcDiff.setVisible(false);
+									menuAction(e.getActionCommand());
+									
 								}
                     		});
 //                    		items.put(cmd, item);
@@ -355,8 +415,12 @@ public class Menu
 										return;
 									select("Player 1", "Human");
 									select("Player 2", compDifficulty2);
+									cvcDiff.setVisible(false);
+									hvcDiff.setVisible(true);
 									menuAction(e.getActionCommand());
+
 								}
+								
                     		});
                     	} else if (text.equals("Computer vs Computer")) {
                     		ImageIcon icon = getIcon("iconcomputervscomputer.png");
@@ -379,6 +443,8 @@ public class Menu
 										return;
 									select("Player 1", compDifficulty1);
 									select("Player 2", compDifficulty2);
+									cvcDiff.setVisible(true);
+									hvcDiff.setVisible(false);
 									menuAction(e.getActionCommand());
 								}
                     		});
@@ -398,7 +464,7 @@ public class Menu
                     		icon = getIcon("iconmedium.png");
                     		item = new JRadioButtonMenuItem("Medium", icon);
                     		bg.add(item);
-                    		cmd = "Player 2"  + "/" + "2Medium";
+                    		cmd = "Player 2"  + "/" + "Medium";
                     		item.setActionCommand(cmd);
                     		item.addActionListener(menuSelected);
                     		menu.add(item);
@@ -406,13 +472,53 @@ public class Menu
                     		icon = getIcon("iconhard.png");
                     		item = new JRadioButtonMenuItem("Hard", icon);
                     		bg.add(item);
-                    		cmd = "Player 2"  + "/" + "2Hard";
+                    		cmd = "Player 2"  + "/" + "Hard";
                     		item.setSelected(true);
                     		item.setActionCommand(cmd);
                     		item.addActionListener(menuSelected);
                     		
+                    	} else if (text.equals("Yellow") || text.equals("Red")){
+                    		String cmd;
+                    		if (text.equals("Yellow")) {
+                    			cmd = "P1/";
+                    		} else {
+                    			cmd = "P2/";
+                    		}
+                    		ButtonGroup bg = new ButtonGroup();
+                    		JRadioButtonMenuItem easy = new JRadioButtonMenuItem("Easy");
+                    		easy.setIcon(getIcon("iconeasy.png"));
+                    		easy.setActionCommand(cmd + "Easy");
+                    		easy.addActionListener(menuSelected);
+                    		JRadioButtonMenuItem medium = new JRadioButtonMenuItem("Medium");
+                    		medium.setIcon(getIcon("iconmedium.png"));
+                    		medium.setActionCommand(cmd + "Medium");
+                    		medium.addActionListener(menuSelected);
+                    		JRadioButtonMenuItem hard = new JRadioButtonMenuItem("Hard");
+                    		hard.setIcon(getIcon("iconhard.png"));
+                    		hard.setActionCommand(cmd + "Hard");
+                    		hard.addActionListener(menuSelected);
+                    		bg.add(easy);
+                    		bg.add(medium);
+                    		bg.add(hard);
+                    		
+                    		if (text.equals("Yellow"))
+                    			easy.setSelected(true);
+                    		else
+                    			hard.setSelected(true);
+                    
+                    		if (text.equals("Yellow")) {
+	                    		item = new JMenu("Yellow");
+	                    		item.add(easy);
+	                    		item.add(medium);
+	                    		item.add(hard);
+                    		} else {
+                    			item = new JMenu("Red");
+                    			item.add(easy);
+	                    		item.add(medium);
+	                    		item.add(hard);
+                    		}
                     	} else {
-                        	item = new JMenuItem(text);   //New item to add
+                    		item = new JMenuItem(text);   //New item to add
                         }
                         menu.add(item); //add it to the menu
                     }
@@ -441,6 +547,8 @@ public class Menu
 									select("Player 1", "Human");
 									select("Player 2", "Human");
 									menuAction(e.getActionCommand()); 
+									cvcDiff.setVisible(false);
+									hvcDiff.setVisible(false);
 								}
                         		
                         	});
@@ -469,6 +577,9 @@ public class Menu
 									else 
 										select("Player 2", "Hard");
 									menuAction(e.getActionCommand()); 
+									cvcDiff.setVisible(false);
+									hvcDiff.setVisible(true);
+
 								}
                         		
                         	});
@@ -514,7 +625,8 @@ public class Menu
 									
 									
 								menuAction(e.getActionCommand()); 
-
+								cvcDiff.setVisible(true);
+								hvcDiff.setVisible(false);
 								}
                         	});
                         	item.add(hvh);
@@ -556,7 +668,6 @@ public class Menu
 	                    menu.add(item);                         //Add it to the root
 	                    item.setActionCommand(cmd);
 	                    item.addActionListener(menuSelected);   //When selected, call the menuSelected listener
-//	                    System.out.println("adding " + text);
                     }
                 }
             }
