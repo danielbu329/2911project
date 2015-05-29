@@ -71,8 +71,9 @@ public class Menu
 //        menu = addMenu(menubar, "Player 2", "Human/--/!Computer/Easy/Medium/Hard".split("/"));
 //        menu.setIcon(player2);
         
-        menu = addMenu(menubar, "Mode", "-Normal/-Speed/-Endless".split("/"));
+        menu = addMenu(menubar, "Mode", "-Modes".split("/"));
         menu.setIcon(getIcon("icontinyboard.png"));
+        
         menu = addMenu(menubar, "Players", "-Human vs Human/-Human vs Computer/-Computer vs Computer".split("/"));
         menu.setIcon(getIcon("iconhumanvscomputer.png"));        
         
@@ -238,6 +239,7 @@ public class Menu
 			JRadioButtonMenuItem rad= (JRadioButtonMenuItem) hvcDiff.getMenuComponent(3);
 			rad.setSelected(true);
 		}
+		
     }
 
     /**
@@ -320,12 +322,11 @@ public class Menu
                     else if (ch == '-') 
                     {
                     	text = text.substring(1);
-                        if (text.equals("Normal")) {
+                    	if (text.equals("Modes")) {
                         	ImageIcon icon = getIcon("iconnormal.png");
-                        	item = new JMenuItem(text, icon);
-                        	
+                        	ButtonGroup bg = new ButtonGroup();
+                        	item = new JRadioButtonMenuItem("Normal", icon);
                         	item.setActionCommand("Game/Normal");
-//                        	item.setMnemonic(KeyEvent.VK_N);
                         	item.addActionListener(new ActionListener() {
 								@Override
 								public void actionPerformed(ActionEvent e) {
@@ -335,27 +336,29 @@ public class Menu
 								}
                         	});
                         	items.put("Game/Normal", item);
-                        } else if (text.equals("Speed")) {
-                        	ImageIcon icon = getIcon("iconspeed.png");
-                        	item = new JMenuItem(text, icon);
+                        	bg.add(item);
+                        	menu.add(item);
+                        	item.setSelected(true);
                         	
-                        	item.setActionCommand("Game/Speed");
-//                        	item.setMnemonic(KeyEvent.VK_N);
-                        	item.addActionListener(new ActionListener() {
-								@Override
-								public void actionPerformed(ActionEvent e) {
-									if (!checkDiscardGame())
-										return;
-									menuAction(e.getActionCommand());
-								}
-                        	});
-                        	items.put("Game/Speed", item);
-                        } else if (text.equals("Endless")) {
-                        	ImageIcon icon = getIcon("iconendless.png");
-                        	item = new JMenuItem(text, icon);
-                        	
+                        	icon = getIcon("iconspeed.png");
+                         	item = new JRadioButtonMenuItem("Speed", icon);
+                         	item.setActionCommand("Game/Speed");
+                         	item.addActionListener(new ActionListener() {
+ 								@Override
+ 								public void actionPerformed(ActionEvent e) {
+ 									if (!checkDiscardGame())
+ 										return;
+ 									menuAction(e.getActionCommand());
+ 								}
+                         	});
+                         	items.put("Game/Speed", item);
+                         	bg.add(item);
+                         	menu.add(item);
+                         	
+                         	
+                         	icon = getIcon("iconendless.png");
+                        	item = new JRadioButtonMenuItem("Endless", icon);
                         	item.setActionCommand("Game/Endless");
-//                        	item.setMnemonic(KeyEvent.VK_N);
                         	item.addActionListener(new ActionListener() {
 								@Override
 								public void actionPerformed(ActionEvent e) {
@@ -365,7 +368,9 @@ public class Menu
 								}
                         	});
                         	items.put("Game/Endless", item);
-                        }  else if (text.equals("Human vs Human")) {
+                        	bg.add(item);
+                        	
+                        } else if (text.equals("Human vs Human")) {
                         	ImageIcon icon = getIcon("iconhumanvshuman.png");
                     		item = new JMenuItem(text, icon);
                     		String cmd;
